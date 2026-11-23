@@ -523,7 +523,7 @@ function rowHTML(p, id, canEdit, showBeer) {
   const btn = (v, lbl, title) => `<button class="${v}" aria-pressed="${st === v}" data-v="${v}" title="${title}" ${canEdit ? "" : "disabled"}>${lbl}</button>`;
   const why = [];
   if (st === "no" && r.motivo) why.push(`<b>Motivo:</b> ${esc(r.motivo)}`);
-  if (showBeer && (r.cerveza != null || p.fecha <= today) && st !== "no") why.push(r.cerveza === true ? `🍺 Se quedó${r.motivo_cerveza ? ": " + esc(r.motivo_cerveza) : ""}` : r.cerveza === false ? `🚫🍺 <b>Sin cerveza</b>${r.motivo_cerveza ? ": " + esc(r.motivo_cerveza) : ""}` : '<span class="faint">🍺 sin marcar</span>');
+  if (showBeer && (r.cerveza != null || p.fecha <= today) && st !== "no") why.push(r.cerveza === true ? `🍺 <b>Cervezas: sí</b>${r.motivo_cerveza ? " · " + esc(r.motivo_cerveza) : ""}` : r.cerveza === false ? `🚫🍺 <b>Cervezas: no</b>${r.motivo_cerveza ? " · " + esc(r.motivo_cerveza) : ""}` : '<span class="faint">🍺 sin marcar</span>');
   return `<div class="p st-${st}${id === S.me ? " mine" : ""}" data-j="${id}">
     <div class="d num">${j?.dorsal ?? ""}</div>
     <div class="n">${esc(jName(id))}${j?.fijo ? "" : j?.invitado ? "<small>invitado</small>" : j?.en_ficha ? "<small>opcional</small>" : ""}${id === S.me ? "<small>tú</small>" : ""}</div>
