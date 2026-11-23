@@ -255,3 +255,17 @@ create table if not exists public.fotos (
   portada boolean not null default false,
   created_at timestamptz not null default now()
 );
+
+-- Migración 4: posiciones y foto de perfil
+alter table public.jugadores add column if not exists posicion text check (posicion is null or posicion ~ '^(POR|DFC|MED|DC)(/(POR|DFC|MED|DC))?$');
+alter table public.jugadores add column if not exists foto text;
+create or replace function public.set_foto_perfil(p_jugador text, p_path text) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if p_path !~ ('^avatars/' || p_jugador || '/[A-Za-z0-9._-]+\.jpg$') then raise exception 'Ruta no válida'; end if;
+  if not exists (select 1 from storage.objects where bucket_id = 'fotos' and name = p_path) then raise exception 'La foto no existe'; end if;
+  update public.jugadores set foto = p_path where id = p_jugador and activo;
+  if not found then raise exception 'Jugador no válido'; end if;
+end $$;
+revoke all on function public.set_foto_perfil(text, text) from public;
+grant execute on function public.set_foto_perfil(text, text) to anon, authenticated;

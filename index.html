@@ -104,7 +104,10 @@ textarea { width: 100%; min-height: 200px; font: 13px/1.4 ui-monospace, Menlo, m
 .p { display: grid; grid-template-columns: 36px 1fr auto; gap: 4px 10px; align-items: center; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); }
 .p.mine { box-shadow: 0 0 0 2px var(--accent) inset; }
 .p .d { font: 700 18px/1 var(--display); color: var(--ink-3); text-align: center; }
-.p .n { font-weight: 600; }
+.p .n { font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.av { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex: none; box-shadow: 0 0 0 1.5px var(--accent, #e8a317); }
+.ut .face.ph { opacity: 1; top: 11%; }
+.ut .face.ph img { width: 50%; position: relative; left: 6%; box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 3px rgba(255,255,255,.55); -webkit-mask-image: linear-gradient(#000 80%, transparent); mask-image: linear-gradient(#000 80%, transparent); }
 .p .n small { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
 .p .why { grid-column: 2 / 4; font-size: 13px; color: var(--ink-2); }
 .p .why b { font-weight: 600; }
@@ -374,6 +377,7 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
 </dialog>
 <dialog id="cardDlg" class="carddlg">
   <div id="cardBig"></div>
+  <div id="avBox" hidden style="text-align:center;margin-top:10px"><label class="btn" style="cursor:pointer">📷 <span id="avLbl">Cambiar foto de perfil</span><input type="file" id="avFile" accept="image/*" hidden></label></div>
   <div class="row spread" style="margin-top:12px"><button class="btn" id="cardClose" type="button">Cerrar</button><button class="btn primary" id="cardShare" type="button">Compartir carta</button></div>
 </dialog>
 <dialog id="photoDlg" class="photodlg">
@@ -602,7 +606,7 @@ function rowHTML(p, id, canEdit, showBeer) {
   if (showBeer && (r.cerveza != null || p.fecha <= today) && st !== "no") why.push(r.cerveza === true ? `🍺 <b>Cervezas: sí</b>${r.motivo_cerveza ? " · " + esc(r.motivo_cerveza) : ""}` : r.cerveza === false ? `🚫🍺 <b>Cervezas: no</b>${r.motivo_cerveza ? " · " + esc(r.motivo_cerveza) : ""}` : '<span class="faint">🍺 sin marcar</span>');
   return `<div class="p st-${st}${id === S.me ? " mine" : ""}" data-j="${id}">
     <div class="d num">${j?.dorsal ?? ""}</div>
-    <div class="n">${esc(jName(id))}${j?.fijo ? "" : j?.invitado ? "<small>invitado</small>" : j?.en_ficha ? "<small>opcional</small>" : ""}${id === S.me ? "<small>tú</small>" : ""}</div>
+    <div class="n">${avatar(id)}${esc(jName(id))}${j?.fijo ? "" : j?.invitado ? "<small>invitado</small>" : j?.en_ficha ? "<small>opcional</small>" : ""}${id === S.me ? "<small>tú</small>" : ""}</div>
     <div class="seg" role="group" aria-label="Respuesta de ${esc(jName(id))}">${btn("si", "✅", "Voy")}${btn("no", "❌", "No voy")}${btn("duda", "⁉️", "Duda")}</div>
     ${why.length ? `<div class="why">${why.join(" · ")}</div>` : ""}
     ${showBeer && canEdit ? `<div class="edit" data-beer><span class="faint">${p.fecha > today ? "¿Te quedas a las cervezas?" : "¿Te quedaste a las cervezas?"}</span><div class="seg"><button class="si" data-b="1" aria-pressed="${r.cerveza === true}">🍺 Sí</button><button class="no" data-b="0" aria-pressed="${r.cerveza === false}">No</button></div></div>` : ""}
@@ -652,7 +656,7 @@ function beerBlockHTML(p) {
   const rows = goers.map(id => {
     const r = respOf(p.id, id) || {}; const editing = S.editing && S.editing.p === p.id && S.editing.j === id;
     return `<div class="p${id === S.me ? " mine" : ""}" data-j="${id}" style="grid-template-columns:1fr auto">
-      <div class="n">${esc(jName(id))}${r.motivo_cerveza ? `<small>${r.cerveza ? "🍺" : "🚫"} ${esc(r.motivo_cerveza)}</small>` : ""}</div>
+      <div class="n">${avatar(id)}${esc(jName(id))}${r.motivo_cerveza ? `<small>${r.cerveza ? "🍺" : "🚫"} ${esc(r.motivo_cerveza)}</small>` : ""}</div>
       <div class="seg"><button class="si" data-b="1" aria-pressed="${r.cerveza === true}" ${isAdmin() || id === S.me ? "" : "disabled"}>🍺 Sí</button><button class="no" data-b="0" aria-pressed="${r.cerveza === false}" ${isAdmin() || id === S.me ? "" : "disabled"}>No</button></div>
       ${editing ? editorHTML(S.editing.kind, r, "grid-column:1/3") : ""}
     </div>`; }).join("");
@@ -978,15 +982,15 @@ function renderPlantilla() {
   $("#tabPlantilla").hidden = !isAdmin(); if (!isAdmin()) return;
   const showIn = $("#showInactive").checked;
   const js = [...S.jug.values()].filter(j => showIn || j.activo).sort((a, b) => (b.fijo - a.fijo) || (a.orden ?? 99) - (b.orden ?? 99) || a.nombre.localeCompare(b.nombre));
-  $("#plantilla").innerHTML = `<div class="pl-row faint"><span>Dorsal</span><span>Jugador</span><span>Orden</span><span></span><span></span></div>` + js.map(j => `
+  $("#plantilla").innerHTML = `<div class="pl-row faint"><span>Dorsal</span><span>Jugador</span><span>Pos · Orden</span><span></span><span></span></div>` + js.map(j => `
     <div class="pl-row" data-id="${j.id}"><input type="number" min="0" max="99" value="${j.dorsal ?? ""}" data-f="dorsal" aria-label="Dorsal de ${esc(j.nombre)}">
       <span><b>${esc(j.nombre)}</b> <span class="faint">${j.en_ficha ? "ficha" : ""}</span></span>
-      <input type="number" min="0" value="${j.orden ?? ""}" data-f="orden" style="width:56px" aria-label="Orden de ${esc(j.nombre)}">
+      <span style="display:flex;gap:4px"><input value="${esc(j.posicion || "")}" data-f="posicion" placeholder="POS" style="width:76px" aria-label="Posición de ${esc(j.nombre)}"><input type="number" min="0" value="${j.orden ?? ""}" data-f="orden" style="width:56px" aria-label="Orden de ${esc(j.nombre)}"></span>
       <label><input type="checkbox" data-f="fijo" ${j.fijo ? "checked" : ""}> Fijo</label>
       <label><input type="checkbox" data-f="activo" ${j.activo ? "checked" : ""}> Activo</label></div>`).join("");
   $("#plantilla").querySelectorAll("input[data-f]").forEach(inp => inp.onchange = async () => {
     const j = { ...S.jug.get(inp.closest(".pl-row").dataset.id) }; const f = inp.dataset.f;
-    j[f] = inp.type === "checkbox" ? inp.checked : (inp.value === "" ? null : +inp.value);
+    j[f] = inp.type === "checkbox" ? inp.checked : inp.value === "" ? null : f === "posicion" ? inp.value.trim().toUpperCase() : +inp.value;
     try { await admin("jugador_upsert", j); S.jug.set(j.id, j); toast("Guardado."); } catch (e) { toast(e.message); }
   });
 }
@@ -1013,18 +1017,19 @@ function playerCard(id, season) {
     MVP: clamp(45 + mvpVotes.filter(v => v.tipo === "mvp").length * 6 + mvpW * 10 - mvpVotes.filter(v => v.tipo === "mvpnt").length * 3),
     POR: clamp(45 + porra * 3),
   };
-  const ovr = clamp(st.ASI * .3 + st.BIR * .2 + st.FIA * .2 + st.RAC * .1 + st.MVP * .1 + st.POR * .1, 45, 99);
-  return { id, st, ovr, mvpW, mvpntW, conv: conv.length, va, seasonUsed: season };
+  const base = Math.round(st.ASI * .3 + st.BIR * .2 + st.FIA * .2 + st.RAC * .1 + st.MVP * .1 + st.POR * .1);
+  const ovr = clamp(base + 2 * mvpW - 2 * mvpntW, 40, 99);
+  return { id, st, base, ovr, mvpW, mvpntW, conv: conv.length, va, seasonUsed: season };
 }
 function cardHTML(c) {
   const j = S.jug.get(c.id); const tier = c.ovr >= 85 ? "special" : c.ovr >= 75 ? "gold" : c.ovr >= 65 ? "silver" : "bronze";
-  const badges = (c.mvpW ? "🏆".repeat(Math.min(c.mvpW, 3)) : "") + (c.mvpntW ? "<br>💩" : "");
+  const badges = (c.mvpW ? "🏆".repeat(Math.min(c.mvpW, 3)) : "") + (c.mvpntW ? "<br>" + "💩".repeat(Math.min(c.mvpntW, 3)) : "");
   const initials = j.nombre.split(/\s|\./).filter(Boolean).map(w => w[0]).join("").slice(0, 2).toUpperCase();
   return `<button class="ut ${tier}" data-card="${c.id}" aria-label="Carta de ${esc(j.nombre)}, media ${c.ovr}">
-    <div class="ovr">${c.ovr}</div><div class="pos">${j.dorsal != null ? "#" + j.dorsal : j.fijo ? "FIJO" : "OPC"}</div>
+    <div class="ovr">${c.ovr}</div><div class="pos">${j.posicion ? esc(j.posicion) : j.fijo ? "FIJO" : "OPC"}${j.dorsal != null ? `<small style="display:block;font-size:.7em;opacity:.75;margin-top:2px">#${j.dorsal}</small>` : ""}</div>
     <img class="crestsm" src="escudo.png" alt="">
     <div class="badge">${badges}</div>
-    <div class="face">${initials}</div>
+    <div class="face${j.foto ? " ph" : ""}">${j.foto ? `<img src="${fotoUrl(j.foto)}" crossorigin="anonymous" alt="">` : initials}</div>
     <div class="nm">${esc(j.nombre)}</div>
     <div class="st"><span><b>${c.st.ASI}</b>ASI</span><span><b>${c.st.FIA}</b>FIA</span><span><b>${c.st.BIR}</b>BIR</span><span><b>${c.st.RAC}</b>RAC</span><span><b>${c.st.MVP}</b>MVP</span><span><b>${c.st.POR}</b>POR</span></div>
   </button>`;
@@ -1038,14 +1043,16 @@ function renderCartas() {
 }
 function openCard(id) {
   const c = playerCard(id, $("#cardSeason").value || CUR_SEASON);
-  $("#cardBig").innerHTML = cardHTML(c) + `<p class="faint" style="text-align:center;margin:8px 0 0">${c.va}/${c.conv} partidos · ${c.seasonUsed === "all" ? "todas las temporadas" : "temporada " + c.seasonUsed}</p>`;
-  $("#cardDlg").showModal();
+  const adj = [c.mvpW ? `+${2 * c.mvpW} por ${c.mvpW} MVP` : "", c.mvpntW ? `−${2 * c.mvpntW} por ${c.mvpntW} MVPn't` : ""].filter(Boolean).join(" · ");
+  $("#cardBig").innerHTML = cardHTML(c) + `<p class="faint" style="text-align:center;margin:8px 0 0">${c.va}/${c.conv} partidos · ${c.seasonUsed === "all" ? "todas las temporadas" : "temporada " + c.seasonUsed}<br>Base ${c.base}${adj ? " · " + adj : ""}</p>`;
+  $("#avBox").hidden = !(id === S.me || isAdmin()); $("#avFile").dataset.j = id; $("#avLbl").textContent = S.jug.get(id).foto ? "Cambiar foto de perfil" : "Subir foto de perfil";
+  if (!$("#cardDlg").open) $("#cardDlg").showModal();
 }
 $("#cardClose").onclick = () => $("#cardDlg").close();
 $("#cardShare").onclick = async () => {
   const el = $("#cardBig .ut"); if (!el || !window.html2canvas) return toast("No se pudo generar la imagen.");
   try {
-    const canvas = await html2canvas(el, { backgroundColor: null, scale: 2 });
+    const canvas = await html2canvas(el, { backgroundColor: null, scale: 2, useCORS: true });
     const blob = await new Promise(r => canvas.toBlob(r, "image/png"));
     const file = new File([blob], `carta-${el.dataset.card}.png`, { type: "image/png" });
     if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], title: "Fulhambeer UT" });
@@ -1055,7 +1062,27 @@ $("#cardShare").onclick = async () => {
 $("#cardSeason").onchange = e => { e.target.dataset.touched = "1"; renderCartas(); };
 document.addEventListener("click", e => { const n = e.target.closest(".p[data-j] .n"); if (n && !e.target.closest("button,form")) openCard(n.closest(".p").dataset.j); });
 
+async function squareJpeg(file, size = 512) {
+  const img = await createImageBitmap(file); const side = Math.min(img.width, img.height);
+  const c = document.createElement("canvas"); c.width = c.height = size;
+  c.getContext("2d").drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, size, size);
+  return await new Promise(r => c.toBlob(r, "image/jpeg", 0.88));
+}
+$("#avFile").onchange = async e => {
+  const id = e.target.dataset.j, f = e.target.files[0]; if (!f || !id) return;
+  if (!(id === S.me || isAdmin())) return toast("Solo puedes cambiar tu propia foto.");
+  $("#avLbl").textContent = "Subiendo…";
+  try {
+    const blob = await squareJpeg(f); const path = `avatars/${id}/${Date.now()}.jpg`;
+    const up = await sb.storage.from("fotos").upload(path, blob, { contentType: "image/jpeg" }); if (up.error) throw up.error;
+    const r = await sb.rpc("set_foto_perfil", { p_jugador: id, p_path: path }); if (r.error) throw r.error;
+    S.jug.get(id).foto = path; renderAll(); openCard(id); toast("Foto de perfil actualizada.");
+  } catch (err) { toast("No se pudo subir: " + (err.message || err)); $("#avLbl").textContent = "Cambiar foto de perfil"; }
+  e.target.value = "";
+};
+
 /* ---------- GALERÍA ---------- */
+const avatar = id => { const f = S.jug.get(id)?.foto; return f ? `<img class="av" src="${fotoUrl(f)}" alt="" loading="lazy">` : ""; };
 const fotoUrl = path => sb.storage.from("fotos").getPublicUrl(path).data.publicUrl;
 const thumbUrl = path => fotoUrl(path);
 let galList = [], galIdx = 0;
