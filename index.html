@@ -590,7 +590,7 @@ function renderMvp(p) {
     </div>`;
   };
   box.innerHTML = `<div class="card" style="display:grid;gap:14px"><div class="row spread"><h2>🏆 MVP y 💩 MVPn't · ${fmtDate(p.fecha)}</h2><span class="chip">Hasta el ${fmtDate(addDays(p.fecha, 4)).slice(0, 5)}</span></div>
-    ${!S.me ? '<p class="faint" style="margin:0">Elige quién eres arriba para votar.</p>' : !played.includes(S.me) ? '<p class="faint" style="margin:0">Solo votan los que jugaron (✅). Los votos son anónimos.</p>' : '<p class="faint" style="margin:0">Votos anónimos. No puedes votarte a ti mismo.</p>'}
+    ${!S.me ? '<p class="faint" style="margin:0">Elige quién eres arriba para votar.</p>' : !played.includes(S.me) ? `<p class="alert" style="margin:0">${esc(jName(S.me))}: no aparece tu ✅ en este partido, así que no puedes votar. Solo votan los que jugaron. Si sí jugaste, márcate ✅ arriba (o pídeselo al admin).</p>` : '<p class="faint" style="margin:0">Votos anónimos. No puedes votarte a ti mismo.</p>'}
     <div class="jgrid">${col("mvp", "🏆 MVP", "🏆")}${col("mvpnt", "💩 MVPn't", "💩")}</div></div>`;
   box.querySelectorAll("form[data-mvp]").forEach(f => f.onsubmit = async e => {
     e.preventDefault(); const el = f.querySelector("select").value; if (!el) return;
