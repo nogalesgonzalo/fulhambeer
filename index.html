@@ -371,7 +371,7 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
 
   <section class="view" id="v-cartas">
     <div class="row spread"><h2>Cartas Fulhambeer UT</h2><div class="row" style="gap:10px;align-items:center"><select id="cardMode" aria-label="Tipo de cartas"></select><label class="faint" id="cardOpcWrap" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="cardOpc"> Incluir opcionales</label><select id="cardSeason" aria-label="Temporada de las cartas"></select></div></div>
-    <p class="faint" style="margin:0">Color por ranking de los fijos: Nº1 y Nº2 con carta especial, 3º-4º «En forma», 5º-7º oro, el resto plata (bronce si baja de 60). Stats: ASI asistencia · BIR cervezas · FIA fiabilidad · RAC mejor racha · MVP votos recibidos (MVP suma, MVPn't resta) · POR porra. Media = ASI 35% · FIA 20% · BIR 15% · MVP 15% · POR 10% · RAC 5%, ±2 por cada MVP/MVPn't ganado. Los iconos del lateral son PlayStyles+: el mejor del equipo en cada cosa (o lo ganó en el último partido). Los PlayStyles normales se ven al abrir la carta. Pulsa una carta para verla en grande.</p>
+    <p class="faint" style="margin:0">Color por ranking de los fijos: Nº1 y Nº2 con carta especial, 3º-4º «En forma», 5º-7º oro, el resto plata (bronce si baja de 60). Stats: ASI asistencia · BIR cervezas · FIA fiabilidad · RAC mejor racha · MVP votos recibidos (MVP suma, MVPn't resta) · POR porra. Media = ASI 30% · BIR 20% · FIA 15% · MVP 15% · POR 15% · RAC 5%, ±2 por cada MVP/MVPn't ganado. Los iconos del lateral son PlayStyles+: el mejor del equipo en cada cosa (o lo ganó en el último partido). Los PlayStyles normales se ven al abrir la carta. Pulsa una carta para verla en grande.</p>
     <div class="cards" id="cardsGrid"></div>
   </section>
 
@@ -1059,7 +1059,7 @@ function playerCard(id, season, raw = false) {
   };
   // stats sin datos en el periodo (p. ej. MVP o porra en temporadas antiguas) no cuentan en la media
   const has = { ASI: 1, FIA: 1, RAC: 1, BIR: [...S.resp.values()].some(r => r.cerveza != null && ids.has(r.partido_id)), MVP: S.mvp.some(v => ids.has(v.partido_id)), POR: S.porras.some(x => ids.has(x.partido_id)) };
-  const W = { ASI: .35, FIA: .2, BIR: .15, MVP: .15, POR: .1, RAC: .05 }; let num = 0, den = 0;
+  const W = { ASI: .3, BIR: .2, FIA: .15, MVP: .15, POR: .15, RAC: .05 }; let num = 0, den = 0;
   for (const k in W) if (has[k]) { num += st[k] * W[k]; den += W[k]; }
   const base = Math.round(num / den);
   const ovr = clamp(base + 2 * mvpW - 2 * mvpntW, 40, 99);
