@@ -237,8 +237,6 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
 
 .ut.toty { --fr: linear-gradient(135deg, #fff4ee, #c47f6c 28%, #fff0e8 52%, #a05a4a 76%, #ffe3d6); --bg: radial-gradient(70% 50% at 70% 20%, rgba(255,255,255,.35), transparent 70%), linear-gradient(165deg, #3b1420 0%, #6e2635 40%, #a3485a 75%, #d78a7e 100%); --ink: #ffe9dc; --acc: rgba(255,214,190,.85); --bub: transparent; --beam: rgba(255,220,200,.3); --wmo: .12; }
 .ut.toty .tex { -webkit-mask-image: none; mask-image: none; background: radial-gradient(circle at 12% 20%, #ffd76a 0 .8cqw, transparent 1cqw), radial-gradient(circle at 85% 32%, #fff 0 .6cqw, transparent .8cqw), radial-gradient(circle at 70% 12%, #ffb3a1 0 .9cqw, transparent 1.1cqw), radial-gradient(circle at 22% 48%, #fff 0 .5cqw, transparent .7cqw), radial-gradient(circle at 92% 60%, #ffd76a 0 .7cqw, transparent .9cqw), radial-gradient(circle at 8% 70%, #ffb3a1 0 .6cqw, transparent .8cqw), radial-gradient(circle at 55% 6%, #fff 0 .5cqw, transparent .7cqw), radial-gradient(circle at 40% 30%, #ffd76a 0 .45cqw, transparent .65cqw); }
-.ut.tots { --fr: linear-gradient(135deg, #fff3b8, #b48a1e 30%, #fff0a8 55%, #6d520c); --bg: linear-gradient(170deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.35) 100%), repeating-linear-gradient(180deg, #13804c 0 9cqw, #0e6b3f 9cqw 18cqw); --ink: #fbe7a0; --acc: rgba(251,231,160,.8); --bub: transparent; --beam: rgba(255,255,255,.15); --wmo: .13; }
-.ut.tots .tex { -webkit-mask-image: none; mask-image: none; background: radial-gradient(circle at 50% 50%, transparent 17cqw, rgba(255,255,255,.28) 17.2cqw 17.8cqw, transparent 18cqw), linear-gradient(to bottom, transparent calc(50% - .3cqw), rgba(255,255,255,.28) calc(50% - .3cqw) calc(50% + .3cqw), transparent calc(50% + .3cqw)), radial-gradient(circle at 50% 50%, rgba(255,255,255,.4) 0 1cqw, transparent 1.2cqw); }
 
 .ut .pss { display: flex; flex-direction: column; gap: 2cqw; }
 .ps { --psbg: #1d1a14; display: inline-grid; place-items: center; width: 9cqw; height: 9cqw; border-radius: 50%; background: var(--psbg); color: #f3f0e8; box-shadow: 0 0 0 .45cqw rgba(255,255,255,.35); }
@@ -251,6 +249,10 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
 .pslist .ps { width: 30px; height: 30px; flex: none; container-type: normal; box-shadow: 0 0 0 1.5px rgba(0,0,0,.25); }
 .pslist .ps.plus { box-shadow: 0 0 0 2px #e9b949, 0 0 8px rgba(255,200,80,.6); }
 .pslist .ps.neg.plus { box-shadow: 0 0 0 2px #b5c93a; }
+
+.ut.tots { --fr: linear-gradient(135deg, #ffffff, #8fa6d8 22%, #f7f0ff 45%, #9fd8cf 65%, #fff4cf 82%, #7e8fc4); --bg: linear-gradient(135deg, #e3ebff 0%, #cfd9ff 18%, #f1dcff 38%, #d6f7ef 58%, #fff0cc 78%, #d7e1ff 100%); --ink: #141d3a; --acc: rgba(30,45,100,.45); --bub: rgba(255,255,255,.8); --beam: rgba(255,255,255,.7); --wmo: .1; }
+.ut.tots .tex { -webkit-mask-image: linear-gradient(to top, #000, rgba(0,0,0,.35) 70%, transparent); mask-image: linear-gradient(to top, #000, rgba(0,0,0,.35) 70%, transparent); background: repeating-linear-gradient(60deg, rgba(255,255,255,.55) 0 .35cqw, transparent .35cqw 7cqw), repeating-linear-gradient(-60deg, rgba(120,140,220,.25) 0 .35cqw, transparent .35cqw 7cqw); }
+.ut.tots .beam { background: linear-gradient(118deg, transparent 30%, rgba(255,255,255,.8) 40%, transparent 46%, transparent 55%, rgba(200,180,255,.6) 60%, transparent 66%); opacity: 1; }
 </style>
 </head>
 <body>
@@ -369,7 +371,7 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
 
   <section class="view" id="v-cartas">
     <div class="row spread"><h2>Cartas Fulhambeer UT</h2><div class="row" style="gap:10px;align-items:center"><select id="cardMode" aria-label="Tipo de cartas"></select><label class="faint" id="cardOpcWrap" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="cardOpc"> Incluir opcionales</label><select id="cardSeason" aria-label="Temporada de las cartas"></select></div></div>
-    <p class="faint" style="margin:0">Color por ranking de los fijos: Nº1 y Nº2 con carta especial, 3º-4º «En forma», 5º-7º oro, el resto plata (bronce si baja de 60). Stats: ASI asistencia · BIR cervezas · FIA fiabilidad · RAC mejor racha · MVP votos · POR porra. Los iconos del lateral son PlayStyles (con borde dorado = Plus, lo tiene ahora mismo). Pulsa una carta para verla en grande.</p>
+    <p class="faint" style="margin:0">Color por ranking de los fijos: Nº1 y Nº2 con carta especial, 3º-4º «En forma», 5º-7º oro, el resto plata (bronce si baja de 60). Stats: ASI asistencia · BIR cervezas · FIA fiabilidad · RAC mejor racha · MVP votos · POR porra. Los iconos del lateral son PlayStyles+: el mejor del equipo en cada cosa (o lo ganó en el último partido). Los PlayStyles normales se ven al abrir la carta. Pulsa una carta para verla en grande.</p>
     <div class="cards" id="cardsGrid"></div>
   </section>
 
@@ -1060,7 +1062,7 @@ function playerCard(id, season, raw = false) {
   const base = Math.round(num / den);
   const ovr = clamp(base + 2 * mvpW - 2 * mvpntW, 40, 99);
   const porraW = ps.filter(p => { const pp = S.porras.filter(x => x.partido_id === p.id).map(x => [x.jugador_id, porraPts(x, p)]).filter(x => x[1] > 0); const mx = Math.max(0, ...pp.map(x => x[1])); return pp.some(x => x[0] === id && x[1] === mx); }).length;
-  return { id, st, base, ovr, mvpW, mvpntW, porraW, best, conv: conv.length, va, seasonUsed: season };
+  return { id, st, base, ovr, mvpW, mvpntW, porraW, porraPts: porra, beerN: beerY + beerN, best, conv: conv.length, va, seasonUsed: season };
 }
 function cardHTML(c) {
   const j = S.jug.get(c.id); const tier = c.tier ? c.tier : c.ovr >= 85 ? "special" : c.ovr >= 75 ? "gold" : c.ovr >= 65 ? "silver" : "bronze";
@@ -1070,7 +1072,7 @@ function cardHTML(c) {
   const lblCls = lbl.length > 15 ? "lbl long" : "lbl";
   return `<button class="ut ${tier}" data-card="${c.id}" aria-label="Carta de ${esc(j.nombre)}, media ${c.ovr}"><div class="in">
     <div class="beam"></div><div class="tex"></div><div class="wm"></div>
-    <div class="side"><div class="ovr">${c.ovr}</div><div class="pos">${j.posicion ? esc(j.posicion) : j.fijo ? "FIJO" : "OPC"}</div>${j.dorsal != null ? `<div class="num">#${j.dorsal}</div>` : ""}<div class="sep"></div>${c.ps && c.ps.length ? `<div class="pss">${c.ps.slice(0, 3).map(psIcon).join("")}</div>` : ""}</div>
+    <div class="side"><div class="ovr">${c.ovr}</div><div class="pos">${j.posicion ? esc(j.posicion) : j.fijo ? "FIJO" : "OPC"}</div>${j.dorsal != null ? `<div class="num">#${j.dorsal}</div>` : ""}<div class="sep"></div>${c.ps && c.ps.some(x => x.plus) ? `<div class="pss">${c.ps.filter(x => x.plus).slice(0, 3).map(psIcon).join("")}</div>` : ""}</div>
     <div class="face${j.foto ? " ph" : ""}">${j.foto ? `<img src="${fotoUrl(j.foto)}" crossorigin="anonymous" alt="">` : initials}</div>
     <div class="plate"><div class="nm">${esc(j.nombre)}</div><div class="st"><div><span><b>${st.ASI}</b>ASI</span><span><b>${st.BIR}</b>BIR</span><span><b>${st.FIA}</b>FIA</span></div><div><span><b>${st.RAC}</b>RAC</span><span><b>${st.MVP}</b>MVP</span><span><b>${st.POR}</b>POR</span></div></div></div>
     ${lbl ? `<div class="${lblCls}">${lbl}</div>` : ""}
@@ -1078,35 +1080,38 @@ function cardHTML(c) {
 }
 /* PlayStyles: logros como iconos. Normal = conseguido esta temporada; Plus = lo tiene ahora mismo */
 const PS = {
-  mvp: { n: "MVP", d: "Ha ganado algún MVP esta temporada", dp: "MVP del último partido", svg: '<path d="M12 2.5l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 16.9 6.3 20l1.2-6.4-4.7-4.4 6.4-.8z"/>' },
-  racha: { n: "En racha", d: "Racha de 4+ partidos seguidos esta temporada", dp: "Lleva 4+ partidos seguidos ahora mismo", svg: '<path d="M12 2c.6 3.4 4.8 5.6 4.8 10.6A4.8 4.8 0 0 1 12 21.5a4.8 4.8 0 0 1-4.8-4.9c0-2.6 1.4-4 2.6-5.4.2 1.8.9 2.9 2.1 3.4-.5-3.9-.7-7.4.1-12.6z"/>' },
-  fijo: { n: "Siempre está", d: "Asistencia de 85+ esta temporada", dp: "No ha fallado ningún partido esta temporada", svg: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><rect x="7" y="2.5" width="2.4" height="5" rx="1" fill="var(--psbg)"/><rect x="14.6" y="2.5" width="2.4" height="5" rx="1" fill="var(--psbg)"/><path d="M7.5 13.2l3 3 6-6" fill="none" stroke="var(--psbg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' },
-  pitonisa: { n: "Pitonisa", d: "Ha ganado alguna porra esta temporada", dp: "Ganó la porra del último partido", svg: '<circle cx="12" cy="10" r="7.2"/><path d="M5.5 21.5h13l-2-3.6h-9z"/><circle cx="9.4" cy="7.8" r="1.6" fill="var(--psbg)"/>' },
-  cervecero: { n: "Cervecero", d: "Se queda a las cervezas el 80%+ de las veces", dp: "El que más se ha quedado en los últimos 30 días", svg: '<path d="M4.5 7.5h11v12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2z"/><path d="M15.5 10h2.2a2 2 0 0 1 2 2v3.4a2 2 0 0 1-2 2h-2.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6.5" cy="6" r="2.6"/><circle cx="10" cy="4.8" r="2.9"/><circle cx="13.5" cy="6" r="2.6"/>' },
-  verguenza: { n: "Vergüenza", d: "Le han votado MVPn't esta temporada", dp: "MVPn't del último partido", neg: true, svg: '<circle cx="12" cy="12" r="9.5"/><path d="M7.6 8.4l2.6 2.6m0-2.6l-2.6 2.6M13.8 8.4l2.6 2.6m0-2.6l-2.6 2.6M8 17.2c2.3-2.3 5.7-2.3 8 0" fill="none" stroke="var(--psbg)" stroke-width="1.8" stroke-linecap="round"/>' },
+  mvp: { n: "MVP", d: "2+ MVPs esta temporada", dp: "MVP del último partido o el que más MVPs lleva", svg: '<path d="M12 2.5l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 16.9 6.3 20l1.2-6.4-4.7-4.4 6.4-.8z"/>' },
+  racha: { n: "En racha", d: "Racha de 6+ partidos seguidos esta temporada", dp: "La racha actual más larga del equipo", svg: '<path d="M12 2c.6 3.4 4.8 5.6 4.8 10.6A4.8 4.8 0 0 1 12 21.5a4.8 4.8 0 0 1-4.8-4.9c0-2.6 1.4-4 2.6-5.4.2 1.8.9 2.9 2.1 3.4-.5-3.9-.7-7.4.1-12.6z"/>' },
+  fijo: { n: "Siempre está", d: "No ha faltado a ningún partido esta temporada", dp: "La mejor asistencia del equipo", svg: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><rect x="7" y="2.5" width="2.4" height="5" rx="1" fill="var(--psbg)"/><rect x="14.6" y="2.5" width="2.4" height="5" rx="1" fill="var(--psbg)"/><path d="M7.5 13.2l3 3 6-6" fill="none" stroke="var(--psbg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' },
+  pitonisa: { n: "Pitonisa", d: "2+ porras ganadas esta temporada", dp: "Ganó la porra del último partido o lidera la porra", svg: '<circle cx="12" cy="10" r="7.2"/><path d="M5.5 21.5h13l-2-3.6h-9z"/><circle cx="9.4" cy="7.8" r="1.6" fill="var(--psbg)"/>' },
+  cervecero: { n: "Cervecero", d: "Se queda a las cervezas el 90%+ de las veces", dp: "El que más se queda a las cervezas", svg: '<path d="M4.5 7.5h11v12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2z"/><path d="M15.5 10h2.2a2 2 0 0 1 2 2v3.4a2 2 0 0 1-2 2h-2.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6.5" cy="6" r="2.6"/><circle cx="10" cy="4.8" r="2.9"/><circle cx="13.5" cy="6" r="2.6"/>' },
+  verguenza: { n: "Vergüenza", d: "2+ MVPn'ts esta temporada", dp: "MVPn't del último partido o el que más lleva", neg: true, svg: '<circle cx="12" cy="12" r="9.5"/><path d="M7.6 8.4l2.6 2.6m0-2.6l-2.6 2.6M13.8 8.4l2.6 2.6m0-2.6l-2.6 2.6M8 17.2c2.3-2.3 5.7-2.3 8 0" fill="none" stroke="var(--psbg)" stroke-width="1.8" stroke-linecap="round"/>' },
 };
 const PS_ORDER = ["mvp", "racha", "fijo", "pitonisa", "cervecero", "verguenza"];
 function psIcon(x) { const d = PS[x.k]; return `<span class="ps${x.plus ? " plus" : ""}${d.neg ? " neg" : ""}" title="${d.n}${x.plus ? "+" : ""}"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${d.svg}</svg></span>`; }
+function curStreak(id) { const played = parts().filter(p => p.fecha < today && competitive(p)); let n = 0; for (let i = played.length - 1; i >= 0; i--) { if (goes(respOf(played[i].id, id)?.estado)) n++; else break; } return n; }
 function liveFlags() {
-  const played = parts().filter(p => p.fecha < today && competitive(p)); const L = played.at(-1); const out = {};
-  const add = (id, k) => id && ((out[id] = out[id] || new Set()).add(k));
-  if (L) {
-    add(mvpWinner(L.id, "mvp"), "mvp"); add(mvpWinner(L.id, "mvpnt"), "verguenza");
-    const pp = S.porras.filter(x => x.partido_id === L.id).map(x => [x.jugador_id, porraPts(x, L)]).filter(x => x[1] > 0);
-    const mx = Math.max(0, ...pp.map(x => x[1])); pp.filter(x => x[1] === mx).forEach(x => add(x[0], "pitonisa"));
-  }
-  S.jug.forEach(j => { let n = 0; for (let i = played.length - 1; i >= 0; i--) { if (goes(respOf(played[i].id, j.id)?.estado)) n++; else break; } if (n >= 4) add(j.id, "racha"); });
-  const since = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10); const beers = {};
-  [...S.resp.values()].filter(r => r.cerveza === true && S.part.get(r.partido_id)?.fecha >= since && S.part.get(r.partido_id)?.fecha < today).forEach(r => beers[r.jugador_id] = (beers[r.jugador_id] || 0) + 1);
-  const bm = Math.max(0, ...Object.values(beers)); if (bm >= 2) Object.entries(beers).filter(x => x[1] === bm).forEach(x => add(x[0], "cervecero"));
+  const L = parts().filter(p => p.fecha < today && competitive(p)).at(-1); const out = { mvp: new Set(), verguenza: new Set(), pitonisa: new Set() }; if (!L) return out;
+  const m = mvpWinner(L.id, "mvp"), n = mvpWinner(L.id, "mvpnt"); m && out.mvp.add(m); n && out.verguenza.add(n);
+  const pp = S.porras.filter(x => x.partido_id === L.id).map(x => [x.jugador_id, porraPts(x, L)]).filter(x => x[1] > 0);
+  const mx = Math.max(0, ...pp.map(x => x[1])); pp.filter(x => x[1] === mx).forEach(x => out.pitonisa.add(x[0]));
   return out;
 }
-function playstyles(c, live) {
-  const L = live || new Set(); const has = {
-    mvp: c.mvpW > 0, racha: c.best >= 4, fijo: c.st.ASI >= 85, pitonisa: c.porraW > 0, cervecero: c.st.BIR >= 80 && c.st.BIR !== 60, verguenza: c.mvpntW > 0,
+// Plus = el mejor del equipo en cada cosa (empates incluidos) o lo ha ganado en el último partido. Normal = umbral exigente, solo se ve en grande.
+function assignPlaystyles(cards, withLive) {
+  const pool = cards.filter(c => !c.icon && S.jug.get(c.id)?.fijo);
+  const lead = (f, min) => { const vals = pool.map(f); const mx = Math.max(-Infinity, ...vals); return new Set(mx >= min ? pool.filter((c, i) => vals[i] === mx).map(c => c.id) : []); };
+  const live = withLive ? liveFlags() : { mvp: new Set(), verguenza: new Set(), pitonisa: new Set() };
+  const plus = {
+    mvp: new Set([...lead(c => c.mvpW, 1), ...live.mvp]),
+    racha: withLive ? lead(c => curStreak(c.id), 3) : lead(c => c.best, 4),
+    fijo: lead(c => c.st.ASI, 80),
+    pitonisa: new Set([...lead(c => c.porraPts, 1), ...live.pitonisa]),
+    cervecero: lead(c => c.beerN ? c.st.BIR : -1, 70),
+    verguenza: new Set([...lead(c => c.mvpntW, 1), ...live.verguenza]),
   };
-  const plus = { fijo: c.va === c.conv && c.conv >= 3 };
-  return PS_ORDER.filter(k => has[k] || L.has(k) || plus[k]).map(k => ({ k, plus: L.has(k) || !!plus[k] })).sort((a, b) => b.plus - a.plus);
+  const normal = { mvp: c => c.mvpW >= 2, racha: c => c.best >= 6, fijo: c => c.va === c.conv && c.conv >= 3, pitonisa: c => c.porraW >= 2, cervecero: c => c.beerN >= 3 && c.st.BIR >= 93, verguenza: c => c.mvpntW >= 2 };
+  return cards.map(c => ({ ...c, ps: PS_ORDER.map(k => plus[k].has(c.id) ? { k, plus: true } : normal[k](c) ? { k, plus: false } : null).filter(Boolean).sort((a, b) => b.plus - a.plus) }));
 }
 const RANK_TIERS = [["toty", "Nº 1"], ["tots", "Nº 2"], ["special", "EN FORMA"], ["special", "EN FORMA"], ["gold"], ["gold"], ["gold"]];
 function specialEditions() {
@@ -1123,9 +1128,8 @@ function renderCartas() {
   let cards, note = "";
   if (mode === "actual") {
     const season = $("#cardSeason").value || CUR_SEASON; const opc = $("#cardOpc").checked;
-    const live = season === CUR_SEASON ? liveFlags() : {};
     const ids = [...S.jug.values()].filter(j => j.activo && (j.fijo || (opc && j.en_ficha))).map(j => j.id);
-    cards = ids.map(id => { const c = playerCard(id, season); return { ...c, ps: playstyles(c, live[id]) }; }).filter(c => c.conv > 0)
+    cards = assignPlaystyles(ids.map(id => playerCard(id, season)).filter(c => c.conv > 0), season === CUR_SEASON)
       .sort((a, b) => (S.jug.get(b.id).fijo - S.jug.get(a.id).fijo) || (!!b.icon - !!a.icon) || b.ovr - a.ovr);
     let rk = 0; cards = cards.map(c => {
       if (c.icon) return c;
@@ -1138,7 +1142,8 @@ function renderCartas() {
     const total = parts().filter(p => p.fecha < today && competitive(p) && inScope(p, scope)).length;
     const lbl = kind === "toty" ? `7 DEL AÑO ${key}` : `7 DE LA TEMP. ${key.slice(2).replace("-", "/")}`;
     cards = [...S.jug.values()].filter(j => j.fijo || j.en_ficha).map(j => playerCard(j.id, scope, true)).filter(c => c.conv >= Math.max(3, total * 0.4))
-      .sort((a, b) => b.ovr - a.ovr).slice(0, 7).map(c => ({ ...c, ovr: clamp(c.ovr + 6, 40, 99), tier: kind, lbl, boost: 6, ps: playstyles(c) }));
+      .sort((a, b) => b.ovr - a.ovr).slice(0, 7).map(c => ({ ...c, ovr: clamp(c.ovr + 6, 40, 99), tier: kind, lbl, boost: 6 }));
+    cards = assignPlaystyles(cards, false);
     note = `<p class="faint" style="grid-column:1/-1;margin:0">Los 7 con mejor media de ${kind === "toty" ? "todo " + key : "la temporada " + key} (mínimo 40% de partidos jugados), con +6 de premio.</p>`;
   }
   S.cardCache = Object.fromEntries(cards.map(c => [c.id, c]));
@@ -1147,7 +1152,7 @@ function renderCartas() {
   $("#cardsGrid").querySelectorAll("[data-card]").forEach(b => b.onclick = () => openCard(b.dataset.card));
 }
 function openCard(id) {
-  const c = S.cardCache[id] || (() => { const x = playerCard(id, CUR_SEASON); return { ...x, ps: playstyles(x, liveFlags()[id]) }; })();
+  const c = S.cardCache[id] || playerCard(id, CUR_SEASON);
   const adj = c.icon ? "" : [c.mvpW ? `+${2 * c.mvpW} por ${c.mvpW} MVP` : "", c.mvpntW ? `−${2 * c.mvpntW} por ${c.mvpntW} MVPn't` : "", c.boost ? `+${c.boost} por estar en el ${c.lbl.toLowerCase()}` : "", c.rank ? `${c.rank}º del equipo` : ""].filter(Boolean).join(" · ");
   const scope = c.seasonUsed === "all" ? "todas las temporadas" : c.seasonUsed[0] === "y" ? "año " + c.seasonUsed.slice(1) : "temporada " + c.seasonUsed;
   const others = c.ps && c.ps.length ? `<div class="pslist">${c.ps.map(x => `<div>${psIcon(x)}<span><b>${PS[x.k].n}${x.plus ? "+" : ""}</b> · ${x.plus ? PS[x.k].dp : PS[x.k].d}</span></div>`).join("")}</div>` : "";
