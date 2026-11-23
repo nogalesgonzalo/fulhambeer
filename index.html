@@ -335,7 +335,7 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
   </section>
 
   <section class="view" id="v-cartas">
-    <div class="row spread"><h2>Cartas Fulhambeer UT</h2><select id="cardSeason" aria-label="Temporada de las cartas"></select></div>
+    <div class="row spread"><h2>Cartas Fulhambeer UT</h2><div class="row" style="gap:10px;align-items:center"><label class="faint" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="cardOpc"> Incluir opcionales</label><select id="cardSeason" aria-label="Temporada de las cartas"></select></div></div>
     <p class="faint" style="margin:0">Media calculada con los datos de la app: ASI asistencia · BIR cervezas · FIA fiabilidad (bajas y bajas de última hora) · RAC mejor racha · MVP votos de MVP · POR puntos de porra. Pulsa una carta para verla en grande y compartirla.</p>
     <div class="cards" id="cardsGrid"></div>
   </section>
@@ -1036,9 +1036,11 @@ function cardHTML(c) {
 }
 function renderCartas() {
   const season = $("#cardSeason").value || CUR_SEASON;
-  const ids = [...S.jug.values()].filter(j => j.activo && (j.fijo || j.en_ficha)).map(j => j.id);
-  const cards = ids.map(id => playerCard(id, season)).filter(c => c.conv > 0).sort((a, b) => b.ovr - a.ovr);
-  $("#cardsGrid").innerHTML = cards.map(cardHTML).join("") || '<p class="faint">Sin datos todavía.</p>';
+  const opc = $("#cardOpc").checked;
+  const ids = [...S.jug.values()].filter(j => j.activo && (j.fijo || (opc && j.en_ficha))).map(j => j.id);
+  const cards = ids.map(id => playerCard(id, season)).filter(c => c.conv > 0).sort((a, b) => (S.jug.get(b.id).fijo - S.jug.get(a.id).fijo) || b.ovr - a.ovr);
+  const firstOpc = cards.findIndex(c => !S.jug.get(c.id).fijo);
+  $("#cardsGrid").innerHTML = cards.map((c, i) => (i === firstOpc ? '<p class="faint" style="grid-column:1/-1;margin:8px 0 0">Opcionales · sus cruces casi nunca se cuentan, así que su media sale inflada</p>' : "") + cardHTML(c)).join("") || '<p class="faint">Sin datos todavía.</p>';
   $("#cardsGrid").querySelectorAll("[data-card]").forEach(b => b.onclick = () => openCard(b.dataset.card));
 }
 function openCard(id) {
@@ -1059,6 +1061,7 @@ $("#cardShare").onclick = async () => {
     else { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }
   } catch (e) { if (e.name !== "AbortError") toast("No se pudo compartir la carta."); }
 };
+$("#cardOpc").onchange = renderCartas;
 $("#cardSeason").onchange = e => { e.target.dataset.touched = "1"; renderCartas(); };
 document.addEventListener("click", e => { const n = e.target.closest(".p[data-j] .n"); if (n && !e.target.closest("button,form")) openCard(n.closest(".p").dataset.j); });
 
