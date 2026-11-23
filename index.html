@@ -212,7 +212,7 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
 .ut .pos { font: 800 7cqw/1 var(--display); letter-spacing: .04em; margin-top: 1cqw; text-align: center; white-space: nowrap; }
 .ut .sep { width: 13cqw; height: .5cqw; background: var(--acc); margin: 3cqw 0; border-radius: 1cqw; }
 .ut .crestsm { width: 12cqw; height: 12cqw; border-radius: 50%; background: #fff; box-shadow: 0 0 0 .5cqw var(--acc); }
-.ut .num { font: 800 6.5cqw/1 var(--display); margin-top: 2.5cqw; opacity: .85; }
+.ut .num { font: 800 6cqw/1 var(--display); margin-top: 1.5cqw; opacity: .8; }
 .ut .badge { font-size: 6cqw; line-height: 1.15; margin-top: 2cqw; text-align: center; }
 .ut .face { position: absolute; left: 30cqw; right: 4cqw; top: 7cqw; height: 50cqw; display: grid; place-items: center; font: italic 900 34cqw/1 var(--display); color: var(--ink); opacity: .12; z-index: 1; }
 .ut .face.ph { opacity: 1; }
@@ -235,20 +235,22 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
 .ut.special .wm { mix-blend-mode: screen; filter: grayscale(1) invert(1) brightness(.6); }
 .ut.icon { --fr: linear-gradient(135deg, #fff9e0, #c79a36 25%, #fff3c4 50%, #a77a22 75%, #fff2c0); --bg: radial-gradient(70% 45% at 60% 25%, #fff 0%, transparent 70%), linear-gradient(165deg, #ffffff 0%, #f7f0e1 40%, #ebdfc2 72%, #d8c38f 100%); --ink: #3a2a08; --acc: rgba(176,135,45,.85); --bub: rgba(200,160,70,.45); --beam: rgba(212,170,80,.35); --wmo: .09; }
 
-.ut.mvp { --fr: linear-gradient(135deg, #bff3ff, #2a6fe0 30%, #e6fbff 55%, #0d2d7a); --bg: radial-gradient(80% 50% at 80% 10%, rgba(120,220,255,.55), transparent 70%), linear-gradient(165deg, #1b49c9 0%, #0f2a86 50%, #071447 100%); --ink: #ffffff; --acc: rgba(140,230,255,.8); --bub: rgba(150,230,255,.6); --beam: rgba(120,220,255,.35); --wmo: .14; }
-.ut.mvp .wm, .ut.pitonisa .wm, .ut.toty .wm, .ut.tots .wm { mix-blend-mode: screen; filter: grayscale(1) invert(1) brightness(.7); }
-.ut.mvp .beam { background: linear-gradient(118deg, transparent 30%, rgba(140,230,255,.5) 33%, transparent 35%, transparent 60%, rgba(140,230,255,.4) 62%, transparent 63%), linear-gradient(62deg, transparent 55%, rgba(255,255,255,.35) 56%, transparent 57.5%); opacity: 1; }
-.ut.pitonisa { --fr: linear-gradient(135deg, #f3dcff, #7b2fd0 30%, #f8ecff 55%, #3a0f6a); --bg: radial-gradient(60% 45% at 70% 25%, rgba(214,140,255,.55), transparent 70%), linear-gradient(170deg, #4a168a 0%, #2a0b4a 55%, #12031f 100%); --ink: #f6e6ff; --acc: rgba(220,170,255,.8); --bub: rgba(255,230,255,.7); --beam: rgba(220,160,255,.25); --wmo: .14; }
-.ut.pitonisa .tex { -webkit-mask-image: none; mask-image: none; background-size: 13cqw 17cqw, 9cqw 11cqw; opacity: .7; }
-.ut.beer { --fr: linear-gradient(135deg, #fff1cf, #b36a0e 30%, #ffd58a 55%, #6a3404); --bg: linear-gradient(to bottom, #fffdf6 0%, #fff4dc 13%, #f6c453 17%, #e39a1c 45%, #b5620b 75%, #7a3a05 100%); --ink: #2a1404; --acc: rgba(80,35,3,.55); --bub: rgba(255,248,225,.85); --beam: rgba(255,240,200,.3); }
-.ut.beer .tex { -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,.7) 70%, transparent 84%); mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,.7) 70%, transparent 84%); }
-.ut.shame { --fr: linear-gradient(135deg, #c9c38a, #5e5a26 35%, #a9a35c 60%, #3a3612); --bg: radial-gradient(70% 50% at 30% 70%, rgba(150,170,40,.5), transparent 70%), linear-gradient(165deg, #c8c26e 0%, #9aa13e 45%, #6b7426 75%, #444a17 100%); --ink: #23260b; --acc: rgba(40,42,10,.55); --bub: rgba(220,230,120,.5); --beam: rgba(255,255,200,.12); filter: drop-shadow(0 8px 14px rgba(0,0,0,.28)) saturate(.85); }
-.ut.shame .tex { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 140'%3E%3Cg fill='none' stroke='%23231a05' stroke-opacity='.45' stroke-width='.7'%3E%3Cpath d='M0 38 L14 44 L22 40 L35 52 L41 49 L52 63'/%3E%3Cpath d='M22 40 L25 30 L19 18'/%3E%3Cpath d='M100 70 L86 74 L80 88 L67 92 L61 104'/%3E%3Cpath d='M80 88 L88 99'/%3E%3Cpath d='M58 0 L62 12 L71 17 L69 29'/%3E%3C/g%3E%3C/svg%3E") center/100% 100% no-repeat; -webkit-mask-image: none; mask-image: none; }
-.ut.shame .ovr { transform: rotate(-4deg); }
 .ut.toty { --fr: linear-gradient(135deg, #fff4ee, #c47f6c 28%, #fff0e8 52%, #a05a4a 76%, #ffe3d6); --bg: radial-gradient(70% 50% at 70% 20%, rgba(255,255,255,.35), transparent 70%), linear-gradient(165deg, #3b1420 0%, #6e2635 40%, #a3485a 75%, #d78a7e 100%); --ink: #ffe9dc; --acc: rgba(255,214,190,.85); --bub: transparent; --beam: rgba(255,220,200,.3); --wmo: .12; }
 .ut.toty .tex { -webkit-mask-image: none; mask-image: none; background: radial-gradient(circle at 12% 20%, #ffd76a 0 .8cqw, transparent 1cqw), radial-gradient(circle at 85% 32%, #fff 0 .6cqw, transparent .8cqw), radial-gradient(circle at 70% 12%, #ffb3a1 0 .9cqw, transparent 1.1cqw), radial-gradient(circle at 22% 48%, #fff 0 .5cqw, transparent .7cqw), radial-gradient(circle at 92% 60%, #ffd76a 0 .7cqw, transparent .9cqw), radial-gradient(circle at 8% 70%, #ffb3a1 0 .6cqw, transparent .8cqw), radial-gradient(circle at 55% 6%, #fff 0 .5cqw, transparent .7cqw), radial-gradient(circle at 40% 30%, #ffd76a 0 .45cqw, transparent .65cqw); }
 .ut.tots { --fr: linear-gradient(135deg, #fff3b8, #b48a1e 30%, #fff0a8 55%, #6d520c); --bg: linear-gradient(170deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.35) 100%), repeating-linear-gradient(180deg, #13804c 0 9cqw, #0e6b3f 9cqw 18cqw); --ink: #fbe7a0; --acc: rgba(251,231,160,.8); --bub: transparent; --beam: rgba(255,255,255,.15); --wmo: .13; }
 .ut.tots .tex { -webkit-mask-image: none; mask-image: none; background: radial-gradient(circle at 50% 50%, transparent 17cqw, rgba(255,255,255,.28) 17.2cqw 17.8cqw, transparent 18cqw), linear-gradient(to bottom, transparent calc(50% - .3cqw), rgba(255,255,255,.28) calc(50% - .3cqw) calc(50% + .3cqw), transparent calc(50% + .3cqw)), radial-gradient(circle at 50% 50%, rgba(255,255,255,.4) 0 1cqw, transparent 1.2cqw); }
+
+.ut .pss { display: flex; flex-direction: column; gap: 2cqw; }
+.ps { --psbg: #1d1a14; display: inline-grid; place-items: center; width: 9cqw; height: 9cqw; border-radius: 50%; background: var(--psbg); color: #f3f0e8; box-shadow: 0 0 0 .45cqw rgba(255,255,255,.35); }
+.ps svg { width: 62%; height: 62%; }
+.ps.plus { --psbg: #2a1d05; color: #ffd76a; box-shadow: 0 0 0 .6cqw #e9b949, 0 0 2.4cqw rgba(255,200,80,.7); }
+.ps.neg { --psbg: #3d4416; color: #d9e86a; box-shadow: 0 0 0 .45cqw rgba(200,220,90,.5); }
+.ps.neg.plus { box-shadow: 0 0 0 .6cqw #b5c93a, 0 0 2.4cqw rgba(190,220,60,.7); }
+.pslist { display: grid; gap: 8px; margin-top: 10px; font-size: 13px; }
+.pslist > div { display: flex; gap: 10px; align-items: center; }
+.pslist .ps { width: 30px; height: 30px; flex: none; container-type: normal; box-shadow: 0 0 0 1.5px rgba(0,0,0,.25); }
+.pslist .ps.plus { box-shadow: 0 0 0 2px #e9b949, 0 0 8px rgba(255,200,80,.6); }
+.pslist .ps.neg.plus { box-shadow: 0 0 0 2px #b5c93a; }
 </style>
 </head>
 <body>
@@ -367,7 +369,7 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
 
   <section class="view" id="v-cartas">
     <div class="row spread"><h2>Cartas Fulhambeer UT</h2><div class="row" style="gap:10px;align-items:center"><select id="cardMode" aria-label="Tipo de cartas"></select><label class="faint" id="cardOpcWrap" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="cardOpc"> Incluir opcionales</label><select id="cardSeason" aria-label="Temporada de las cartas"></select></div></div>
-    <p class="faint" style="margin:0">Media calculada con los datos de la app: ASI asistencia · BIR cervezas · FIA fiabilidad (bajas y bajas de última hora) · RAC mejor racha · MVP votos de MVP · POR puntos de porra. Pulsa una carta para verla en grande y compartirla.</p>
+    <p class="faint" style="margin:0">Color por ranking de los fijos: Nº1 y Nº2 con carta especial, 3º-4º «En forma», 5º-7º oro, el resto plata (bronce si baja de 60). Stats: ASI asistencia · BIR cervezas · FIA fiabilidad · RAC mejor racha · MVP votos · POR porra. Los iconos del lateral son PlayStyles (con borde dorado = Plus, lo tiene ahora mismo). Pulsa una carta para verla en grande.</p>
     <div class="cards" id="cardsGrid"></div>
   </section>
 
@@ -1057,50 +1059,56 @@ function playerCard(id, season, raw = false) {
   for (const k in W) if (has[k]) { num += st[k] * W[k]; den += W[k]; }
   const base = Math.round(num / den);
   const ovr = clamp(base + 2 * mvpW - 2 * mvpntW, 40, 99);
-  return { id, st, base, ovr, mvpW, mvpntW, conv: conv.length, va, seasonUsed: season };
+  const porraW = ps.filter(p => { const pp = S.porras.filter(x => x.partido_id === p.id).map(x => [x.jugador_id, porraPts(x, p)]).filter(x => x[1] > 0); const mx = Math.max(0, ...pp.map(x => x[1])); return pp.some(x => x[0] === id && x[1] === mx); }).length;
+  return { id, st, base, ovr, mvpW, mvpntW, porraW, best, conv: conv.length, va, seasonUsed: season };
 }
 function cardHTML(c) {
   const j = S.jug.get(c.id); const tier = c.tier ? c.tier : c.ovr >= 85 ? "special" : c.ovr >= 75 ? "gold" : c.ovr >= 65 ? "silver" : "bronze";
-  const badges = (c.mvpW ? "🏆".repeat(Math.min(c.mvpW, 3)) : "") + (c.mvpntW ? " " + "💩".repeat(Math.min(c.mvpntW, 3)) : "");
   const initials = j.nombre.split(/\s|\./).filter(Boolean).map(w => w[0]).join("").slice(0, 2).toUpperCase();
   const lbl = c.lbl || "";
   const st = c.st;
   const lblCls = lbl.length > 15 ? "lbl long" : "lbl";
   return `<button class="ut ${tier}" data-card="${c.id}" aria-label="Carta de ${esc(j.nombre)}, media ${c.ovr}"><div class="in">
     <div class="beam"></div><div class="tex"></div><div class="wm"></div>
-    <div class="side"><div class="ovr">${c.ovr}</div><div class="pos">${j.posicion ? esc(j.posicion) : j.fijo ? "FIJO" : "OPC"}</div><div class="sep"></div><img class="crestsm" src="escudo.png" alt="">${j.dorsal != null ? `<div class="num">#${j.dorsal}</div>` : ""}<div class="badge">${badges}${c.extra ? c.extra.map(k => ACH[k].emoji).join("") : ""}</div></div>
+    <div class="side"><div class="ovr">${c.ovr}</div><div class="pos">${j.posicion ? esc(j.posicion) : j.fijo ? "FIJO" : "OPC"}</div>${j.dorsal != null ? `<div class="num">#${j.dorsal}</div>` : ""}<div class="sep"></div>${c.ps && c.ps.length ? `<div class="pss">${c.ps.slice(0, 3).map(psIcon).join("")}</div>` : ""}</div>
     <div class="face${j.foto ? " ph" : ""}">${j.foto ? `<img src="${fotoUrl(j.foto)}" crossorigin="anonymous" alt="">` : initials}</div>
     <div class="plate"><div class="nm">${esc(j.nombre)}</div><div class="st"><div><span><b>${st.ASI}</b>ASI</span><span><b>${st.BIR}</b>BIR</span><span><b>${st.FIA}</b>FIA</span></div><div><span><b>${st.RAC}</b>RAC</span><span><b>${st.MVP}</b>MVP</span><span><b>${st.POR}</b>POR</span></div></div></div>
     ${lbl ? `<div class="${lblCls}">${lbl}</div>` : ""}
   </div></button>`;
 }
-const ACH = {
-  shame: { tier: "shame", lbl: "LA VERGÜENZA", boost: -3, emoji: "🤮", txt: "MVPn't del último partido" },
-  mvp: { tier: "mvp", lbl: "MVP DE LA JORNADA", boost: 3, emoji: "⭐", txt: "MVP del último partido" },
-  racha: { tier: "special", lbl: "EN RACHA", boost: 2, emoji: "🔥", txt: "4+ partidos seguidos yendo" },
-  pitonisa: { tier: "pitonisa", lbl: "PITONISA", boost: 2, emoji: "🔮", txt: "Ganó la porra del último partido" },
-  beer: { tier: "beer", lbl: "CERVECERO DEL MES", boost: 2, emoji: "🍺", txt: "El que más se ha quedado a las cervezas en 30 días" },
+/* PlayStyles: logros como iconos. Normal = conseguido esta temporada; Plus = lo tiene ahora mismo */
+const PS = {
+  mvp: { n: "MVP", d: "Ha ganado algún MVP esta temporada", dp: "MVP del último partido", svg: '<path d="M12 2.5l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 16.9 6.3 20l1.2-6.4-4.7-4.4 6.4-.8z"/>' },
+  racha: { n: "En racha", d: "Racha de 4+ partidos seguidos esta temporada", dp: "Lleva 4+ partidos seguidos ahora mismo", svg: '<path d="M12 2c.6 3.4 4.8 5.6 4.8 10.6A4.8 4.8 0 0 1 12 21.5a4.8 4.8 0 0 1-4.8-4.9c0-2.6 1.4-4 2.6-5.4.2 1.8.9 2.9 2.1 3.4-.5-3.9-.7-7.4.1-12.6z"/>' },
+  fijo: { n: "Siempre está", d: "Asistencia de 85+ esta temporada", dp: "No ha fallado ningún partido esta temporada", svg: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><rect x="7" y="2.5" width="2.4" height="5" rx="1" fill="var(--psbg)"/><rect x="14.6" y="2.5" width="2.4" height="5" rx="1" fill="var(--psbg)"/><path d="M7.5 13.2l3 3 6-6" fill="none" stroke="var(--psbg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' },
+  pitonisa: { n: "Pitonisa", d: "Ha ganado alguna porra esta temporada", dp: "Ganó la porra del último partido", svg: '<circle cx="12" cy="10" r="7.2"/><path d="M5.5 21.5h13l-2-3.6h-9z"/><circle cx="9.4" cy="7.8" r="1.6" fill="var(--psbg)"/>' },
+  cervecero: { n: "Cervecero", d: "Se queda a las cervezas el 80%+ de las veces", dp: "El que más se ha quedado en los últimos 30 días", svg: '<path d="M4.5 7.5h11v12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2z"/><path d="M15.5 10h2.2a2 2 0 0 1 2 2v3.4a2 2 0 0 1-2 2h-2.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6.5" cy="6" r="2.6"/><circle cx="10" cy="4.8" r="2.9"/><circle cx="13.5" cy="6" r="2.6"/>' },
+  verguenza: { n: "Vergüenza", d: "Le han votado MVPn't esta temporada", dp: "MVPn't del último partido", neg: true, svg: '<circle cx="12" cy="12" r="9.5"/><path d="M7.6 8.4l2.6 2.6m0-2.6l-2.6 2.6M13.8 8.4l2.6 2.6m0-2.6l-2.6 2.6M8 17.2c2.3-2.3 5.7-2.3 8 0" fill="none" stroke="var(--psbg)" stroke-width="1.8" stroke-linecap="round"/>' },
 };
-function achievements() {
+const PS_ORDER = ["mvp", "racha", "fijo", "pitonisa", "cervecero", "verguenza"];
+function psIcon(x) { const d = PS[x.k]; return `<span class="ps${x.plus ? " plus" : ""}${d.neg ? " neg" : ""}" title="${d.n}${x.plus ? "+" : ""}"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${d.svg}</svg></span>`; }
+function liveFlags() {
   const played = parts().filter(p => p.fecha < today && competitive(p)); const L = played.at(-1); const out = {};
-  const add = (id, k) => id && (out[id] = out[id] || []).push(k);
+  const add = (id, k) => id && ((out[id] = out[id] || new Set()).add(k));
   if (L) {
-    add(mvpWinner(L.id, "mvp"), "mvp"); add(mvpWinner(L.id, "mvpnt"), "shame");
+    add(mvpWinner(L.id, "mvp"), "mvp"); add(mvpWinner(L.id, "mvpnt"), "verguenza");
     const pp = S.porras.filter(x => x.partido_id === L.id).map(x => [x.jugador_id, porraPts(x, L)]).filter(x => x[1] > 0);
     const mx = Math.max(0, ...pp.map(x => x[1])); pp.filter(x => x[1] === mx).forEach(x => add(x[0], "pitonisa"));
   }
   S.jug.forEach(j => { let n = 0; for (let i = played.length - 1; i >= 0; i--) { if (goes(respOf(played[i].id, j.id)?.estado)) n++; else break; } if (n >= 4) add(j.id, "racha"); });
   const since = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10); const beers = {};
   [...S.resp.values()].filter(r => r.cerveza === true && S.part.get(r.partido_id)?.fecha >= since && S.part.get(r.partido_id)?.fecha < today).forEach(r => beers[r.jugador_id] = (beers[r.jugador_id] || 0) + 1);
-  const bm = Math.max(0, ...Object.values(beers)); if (bm >= 2) Object.entries(beers).filter(x => x[1] === bm).forEach(x => add(x[0], "beer"));
+  const bm = Math.max(0, ...Object.values(beers)); if (bm >= 2) Object.entries(beers).filter(x => x[1] === bm).forEach(x => add(x[0], "cervecero"));
   return out;
 }
-const ACH_ORDER = ["shame", "mvp", "racha", "pitonisa", "beer"];
-function decorate(c, ach) {
-  if (c.icon || !ach) return c;
-  const ks = ACH_ORDER.filter(k => ach.includes(k)); if (!ks.length) return c; const a = ACH[ks[0]];
-  return { ...c, tier: a.tier, lbl: a.lbl, ovr: clamp(c.ovr + a.boost, 40, 99), boost: a.boost, ach: ks, extra: ks.slice(1) };
+function playstyles(c, live) {
+  const L = live || new Set(); const has = {
+    mvp: c.mvpW > 0, racha: c.best >= 4, fijo: c.st.ASI >= 85, pitonisa: c.porraW > 0, cervecero: c.st.BIR >= 80 && c.st.BIR !== 60, verguenza: c.mvpntW > 0,
+  };
+  const plus = { fijo: c.va === c.conv && c.conv >= 3 };
+  return PS_ORDER.filter(k => has[k] || L.has(k) || plus[k]).map(k => ({ k, plus: L.has(k) || !!plus[k] })).sort((a, b) => b.plus - a.plus);
 }
+const RANK_TIERS = [["toty", "Nº 1"], ["tots", "Nº 2"], ["special", "EN FORMA"], ["special", "EN FORMA"], ["gold"], ["gold"], ["gold"]];
 function specialEditions() {
   const ps = parts().filter(p => p.fecha < today && competitive(p)); const yNow = +today.slice(0, 4); const ed = [];
   [...new Set(ps.map(p => p.temporada))].filter(t => t && t !== CUR_SEASON).sort().reverse().forEach(t => ed.push({ v: "tots:" + t, t: `7 de la Temporada ${t}` }));
@@ -1115,15 +1123,22 @@ function renderCartas() {
   let cards, note = "";
   if (mode === "actual") {
     const season = $("#cardSeason").value || CUR_SEASON; const opc = $("#cardOpc").checked;
-    const ach = season === CUR_SEASON ? achievements() : {};
+    const live = season === CUR_SEASON ? liveFlags() : {};
     const ids = [...S.jug.values()].filter(j => j.activo && (j.fijo || (opc && j.en_ficha))).map(j => j.id);
-    cards = ids.map(id => decorate(playerCard(id, season), ach[id])).filter(c => c.conv > 0).sort((a, b) => (S.jug.get(b.id).fijo - S.jug.get(a.id).fijo) || b.ovr - a.ovr);
+    cards = ids.map(id => { const c = playerCard(id, season); return { ...c, ps: playstyles(c, live[id]) }; }).filter(c => c.conv > 0)
+      .sort((a, b) => (S.jug.get(b.id).fijo - S.jug.get(a.id).fijo) || (!!b.icon - !!a.icon) || b.ovr - a.ovr);
+    let rk = 0; cards = cards.map(c => {
+      if (c.icon) return c;
+      if (!S.jug.get(c.id).fijo) return { ...c, tier: c.ovr >= 75 ? "gold" : c.ovr >= 60 ? "silver" : "bronze" };
+      const t = RANK_TIERS[rk++]; if (t) return { ...c, tier: t[0], lbl: t[1] || "", rank: rk };
+      return { ...c, tier: c.ovr < 60 ? "bronze" : "silver", rank: rk };
+    });
   } else {
     const [kind, key] = mode.split(":"); const scope = kind === "toty" ? "y" + key : key;
     const total = parts().filter(p => p.fecha < today && competitive(p) && inScope(p, scope)).length;
     const lbl = kind === "toty" ? `7 DEL AÑO ${key}` : `7 DE LA TEMP. ${key.slice(2).replace("-", "/")}`;
     cards = [...S.jug.values()].filter(j => j.fijo || j.en_ficha).map(j => playerCard(j.id, scope, true)).filter(c => c.conv >= Math.max(3, total * 0.4))
-      .sort((a, b) => b.ovr - a.ovr).slice(0, 7).map(c => ({ ...c, ovr: clamp(c.ovr + 6, 40, 99), tier: kind, lbl, boost: 6 }));
+      .sort((a, b) => b.ovr - a.ovr).slice(0, 7).map(c => ({ ...c, ovr: clamp(c.ovr + 6, 40, 99), tier: kind, lbl, boost: 6, ps: playstyles(c) }));
     note = `<p class="faint" style="grid-column:1/-1;margin:0">Los 7 con mejor media de ${kind === "toty" ? "todo " + key : "la temporada " + key} (mínimo 40% de partidos jugados), con +6 de premio.</p>`;
   }
   S.cardCache = Object.fromEntries(cards.map(c => [c.id, c]));
@@ -1132,11 +1147,11 @@ function renderCartas() {
   $("#cardsGrid").querySelectorAll("[data-card]").forEach(b => b.onclick = () => openCard(b.dataset.card));
 }
 function openCard(id) {
-  const c = S.cardCache[id] || decorate(playerCard(id, CUR_SEASON), achievements()[id]);
-  const adj = c.icon ? "" : [c.mvpW ? `+${2 * c.mvpW} por ${c.mvpW} MVP` : "", c.mvpntW ? `−${2 * c.mvpntW} por ${c.mvpntW} MVPn't` : "", c.boost ? `${c.boost > 0 ? "+" : "−"}${Math.abs(c.boost)} ${c.ach ? ACH[c.ach[0]].txt : "por estar en " + c.lbl.toLowerCase()}` : ""].filter(Boolean).join(" · ");
+  const c = S.cardCache[id] || (() => { const x = playerCard(id, CUR_SEASON); return { ...x, ps: playstyles(x, liveFlags()[id]) }; })();
+  const adj = c.icon ? "" : [c.mvpW ? `+${2 * c.mvpW} por ${c.mvpW} MVP` : "", c.mvpntW ? `−${2 * c.mvpntW} por ${c.mvpntW} MVPn't` : "", c.boost ? `+${c.boost} por estar en el ${c.lbl.toLowerCase()}` : "", c.rank ? `${c.rank}º del equipo` : ""].filter(Boolean).join(" · ");
   const scope = c.seasonUsed === "all" ? "todas las temporadas" : c.seasonUsed[0] === "y" ? "año " + c.seasonUsed.slice(1) : "temporada " + c.seasonUsed;
-  const others = c.extra && c.extra.length ? `<br>También: ${c.extra.map(k => ACH[k].emoji + " " + ACH[k].txt).join(" · ")}` : "";
-  $("#cardBig").innerHTML = cardHTML(c) + `<p class="faint" style="text-align:center;margin:8px 0 0">${c.va}/${c.conv} partidos · ${scope}<br>${c.icon ? "Icono · stats de toda su trayectoria" : `Base ${c.base}${adj ? " · " + adj : ""}`}${others}</p>`;
+  const others = c.ps && c.ps.length ? `<div class="pslist">${c.ps.map(x => `<div>${psIcon(x)}<span><b>${PS[x.k].n}${x.plus ? "+" : ""}</b> · ${x.plus ? PS[x.k].dp : PS[x.k].d}</span></div>`).join("")}</div>` : "";
+  $("#cardBig").innerHTML = cardHTML(c) + `<p class="faint" style="text-align:center;margin:8px 0 0">${c.va}/${c.conv} partidos · ${scope}<br>${c.icon ? "Icono · stats de toda su trayectoria" : `Base ${c.base}${adj ? " · " + adj : ""}`}</p>${others}`;
   $("#avBox").hidden = !(id === S.me || isAdmin()); $("#avFile").dataset.j = id; $("#avLbl").textContent = S.jug.get(id).foto ? "Cambiar foto de perfil" : "Subir foto de perfil";
   if (!$("#cardDlg").open) $("#cardDlg").showModal();
 }
