@@ -106,8 +106,6 @@ textarea { width: 100%; min-height: 200px; font: 13px/1.4 ui-monospace, Menlo, m
 .p .d { font: 700 18px/1 var(--display); color: var(--ink-3); text-align: center; }
 .p .n { font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .av { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; flex: none; box-shadow: 0 0 0 1.5px var(--accent, #e8a317); }
-.ut .face.ph { opacity: 1; top: 11%; }
-.ut .face.ph img { width: 50%; position: relative; left: 6%; box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 3px rgba(255,255,255,.55); -webkit-mask-image: linear-gradient(#000 80%, transparent); mask-image: linear-gradient(#000 80%, transparent); }
 .p .n small { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
 .p .why { grid-column: 2 / 4; font-size: 13px; color: var(--ink-2); }
 .p .why b { font-weight: 600; }
@@ -175,29 +173,7 @@ dialog .row { margin-top: 12px; }
 #whoList button small { font: 600 12px/1 var(--display); color: var(--ink-3); margin-right: 6px; font-style: normal; }
 /* Cartas tipo UT */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 14px; }
-.ut { position: relative; aspect-ratio: 0.72; border-radius: 14px 14px 46% 46% / 14px 14px 18% 18%; padding: 12px 12px 18px; cursor: pointer; overflow: hidden; color: #2b1d05; font-family: var(--display); box-shadow: 0 6px 18px rgba(0,0,0,0.25); transition: transform .15s; border: 0; text-align: left; width: 100%; }
-.ut:hover { transform: translateY(-3px); }
-.ut.gold { background: linear-gradient(160deg, #fff3b0 0%, #f5c84a 35%, #c8901a 75%, #8a5a0a 100%); }
-.ut.silver { background: linear-gradient(160deg, #ffffff 0%, #d9dde3 40%, #9aa3ad 100%); color: #1d2329; }
-.ut.bronze { background: linear-gradient(160deg, #f6d2b0 0%, #c98a55 45%, #7a4a22 100%); color: #2a1406; }
-.ut.special { background: radial-gradient(120% 90% at 70% 10%, #e8661c 0%, #3a1a06 45%, #0d0d0d 100%); color: #f5b82e; }
-.ut { display: block; }
-.ut.icon { background: radial-gradient(90% 60% at 50% 30%, rgba(255,255,255,.95), rgba(255,255,255,0) 70%), linear-gradient(155deg, #fffaf0 0%, #f4e7c5 30%, #fffdf7 48%, #e6cf95 70%, #b8913f 100%); color: #3b2a07; box-shadow: 0 0 0 2px #d4b05a inset, 0 0 0 5px #fff8e6 inset, 0 0 0 6px #c9a14a inset, 0 8px 24px rgba(160,120,30,.45); }
-.ut.icon::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.55) 45%, transparent 55%); pointer-events: none; }
-.ut.icon .nm { border-bottom-color: #c9a14a; }
-.ut .iconlbl { position: absolute; left: 0; right: 0; bottom: 7%; text-align: center; font: 900 11px/1 var(--display); letter-spacing: .35em; color: #a7812d; }
-.ut .ovr { position: absolute; top: 12px; left: 14px; font: italic 900 46px/0.9 var(--display); }
-.ut .pos { position: absolute; top: 58px; left: 16px; font: 800 15px/1 var(--display); letter-spacing: .06em; text-transform: uppercase; }
-.ut .crestsm { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; background: #fff; }
-.ut .face { position: absolute; top: 16%; left: 0; right: 0; text-align: center; font: italic 900 84px/1 var(--display); opacity: .22; letter-spacing: -.02em; }
-.ut .face img { width: 62%; aspect-ratio: 1; object-fit: cover; border-radius: 50%; opacity: 1; }
-.ut .nm { position: absolute; left: 0; right: 0; top: 55%; text-align: center; font: italic 900 22px/1 var(--display); text-transform: uppercase; letter-spacing: .02em; border-bottom: 1px solid currentColor; margin: 0 14px; padding-bottom: 4px; }
-.ut .st { position: absolute; left: 18px; right: 18px; top: 66%; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; font: 700 15px/1.25 var(--display); }
-.ut .st b { font-weight: 900; margin-right: 5px; }
-.ut .badge { position: absolute; left: 14px; top: 80px; font-size: 18px; line-height: 1.2; }
 .carddlg { max-width: 360px; background: var(--paper); }
-.carddlg .ut { cursor: default; font-size: 120%; }
-.carddlg .ut .ovr { font-size: 60px; } .carddlg .ut .pos { top: 74px; font-size: 18px; } .carddlg .ut .badge { top: 100px; } .carddlg .ut .nm { font-size: 28px; } .carddlg .ut .st { font-size: 18px; } .carddlg .ut .face { font-size: 110px; }
 .gal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
 .gal-grid button { border: 0; padding: 0; background: var(--line); border-radius: 8px; overflow: hidden; aspect-ratio: 1; cursor: pointer; position: relative; }
 .gal-grid img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -222,6 +198,40 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
   .pl-row { grid-template-columns: 56px 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* ---- Cartas Fulhambeer UT (diseño propio) ---- */
+.ut { --shape: polygon(0 6%, 6% 0, 94% 0, 100% 6%, 100% 87%, 50% 100%, 0 87%); container-type: inline-size; position: relative; display: block; width: 100%; aspect-ratio: .7; padding: 0; border: 0; background: var(--fr); clip-path: var(--shape); cursor: pointer; filter: drop-shadow(0 8px 14px rgba(0,0,0,.28)); transition: transform .18s; font-family: var(--display); color: var(--ink); text-align: left; }
+.ut:hover { transform: translateY(-4px) rotate(-.4deg); }
+.ut .in { position: absolute; inset: 2.4cqw; clip-path: var(--shape); background: var(--bg); overflow: hidden; }
+.ut .in::before { content: ""; position: absolute; inset: 1.6cqw; clip-path: var(--shape); box-shadow: inset 0 0 0 .5cqw var(--acc); pointer-events: none; z-index: 3; }
+.ut .tex { position: absolute; inset: 0; background-image: radial-gradient(circle, var(--bub) 0 .7cqw, transparent .95cqw), radial-gradient(circle, var(--bub) 0 .45cqw, transparent .7cqw); background-size: 11cqw 13cqw, 7cqw 9cqw; background-position: 0 0, 4cqw 5cqw; -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,.5) 35%, transparent 62%); mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,.5) 35%, transparent 62%); }
+.ut .beam { position: absolute; inset: -20% -40%; background: linear-gradient(118deg, transparent 38%, var(--beam) 45%, transparent 47%, transparent 52%, var(--beam) 55%, transparent 60%); opacity: .8; }
+.ut .wm { position: absolute; width: 78cqw; aspect-ratio: 1; right: -18cqw; top: 22cqw; background: url(escudo.png) center/contain no-repeat; opacity: var(--wmo, .1); filter: grayscale(1) contrast(1.2); mix-blend-mode: multiply; }
+.ut .side { position: absolute; left: 8cqw; top: 8cqw; width: 22cqw; display: flex; flex-direction: column; align-items: center; z-index: 2; }
+.ut .ovr { font: italic 900 21cqw/.85 var(--display); letter-spacing: -.04em; }
+.ut .pos { font: 800 7cqw/1 var(--display); letter-spacing: .04em; margin-top: 1cqw; text-align: center; white-space: nowrap; }
+.ut .sep { width: 13cqw; height: .5cqw; background: var(--acc); margin: 3cqw 0; border-radius: 1cqw; }
+.ut .crestsm { width: 12cqw; height: 12cqw; border-radius: 50%; background: #fff; box-shadow: 0 0 0 .5cqw var(--acc); }
+.ut .num { font: 800 6.5cqw/1 var(--display); margin-top: 2.5cqw; opacity: .85; }
+.ut .badge { font-size: 6cqw; line-height: 1.15; margin-top: 2cqw; text-align: center; }
+.ut .face { position: absolute; left: 30cqw; right: 4cqw; top: 7cqw; height: 50cqw; display: grid; place-items: center; font: italic 900 34cqw/1 var(--display); color: var(--ink); opacity: .12; z-index: 1; }
+.ut .face.ph { opacity: 1; }
+.ut .face img { width: 50cqw; height: 50cqw; object-fit: cover; border-radius: 50%; box-shadow: 0 2cqw 5cqw rgba(0,0,0,.35), 0 0 0 1cqw var(--acc); -webkit-mask-image: linear-gradient(#000 78%, transparent 100%); mask-image: linear-gradient(#000 78%, transparent 100%); }
+.ut .plate { position: absolute; left: 7cqw; right: 7cqw; top: 55%; z-index: 2; }
+.ut .nm { font: italic 900 10cqw/1 var(--display); text-transform: uppercase; text-align: center; letter-spacing: .01em; padding-bottom: 2cqw; border-bottom: .5cqw solid var(--acc); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ut .st { display: grid; grid-template-columns: 1fr 1fr; margin-top: 2.5cqw; font: 700 6.8cqw/1.3 var(--display); }
+.ut .st > div { padding: 0 3cqw; } .ut .st > div:first-child { border-right: .5cqw solid var(--acc); }
+.ut .st span { display: block; white-space: nowrap; } .ut .st b { font-weight: 900; margin-right: 1.6cqw; }
+.ut .lbl { position: absolute; left: 0; right: 0; bottom: 4%; text-align: center; font: 900 3.8cqw/1 var(--display); letter-spacing: .5em; padding-left: .5em; color: var(--acc); z-index: 2; }
+.ut::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%); transform: translateX(-120%); transition: transform .7s; pointer-events: none; }
+.ut:hover::after, .carddlg .ut::after { transform: translateX(120%); }
+.carddlg .ut { cursor: default; } .carddlg .ut:hover { transform: none; }
+.ut.bronze { --fr: linear-gradient(135deg, #ffe0bd, #9a5c2c 30%, #f3c28f 55%, #5e3517); --bg: linear-gradient(165deg, #f6d6b2 0%, #d29a66 40%, #a56635 75%, #6e3d18 100%); --ink: #2a1406; --acc: rgba(70,30,6,.55); --bub: rgba(255,235,210,.55); --beam: rgba(255,230,200,.35); }
+.ut.silver { --fr: linear-gradient(135deg, #ffffff, #8e98a3 30%, #f4f6f8 55%, #5f6973); --bg: linear-gradient(165deg, #ffffff 0%, #e3e7ec 40%, #b4bcc5 75%, #858f9a 100%); --ink: #19202a; --acc: rgba(30,40,55,.45); --bub: rgba(255,255,255,.75); --beam: rgba(255,255,255,.55); }
+.ut.gold { --fr: linear-gradient(135deg, #fff7cf, #b98a22 30%, #ffeaa0 55%, #7a5410); --bg: linear-gradient(165deg, #fff6c9 0%, #f4d168 35%, #ddaa33 65%, #a8741a 100%); --ink: #2b1d05; --acc: rgba(90,58,5,.55); --bub: rgba(255,250,220,.7); --beam: rgba(255,250,220,.5); }
+.ut.special { --fr: linear-gradient(135deg, #ffe39a, #b07d1c 30%, #fff0c0 55%, #6e4c0e); --bg: radial-gradient(90% 55% at 85% 8%, rgba(232,140,30,.55), transparent 70%), linear-gradient(170deg, #2a2112 0%, #0f0d0a 55%, #050505 100%); --ink: #f6cf62; --acc: rgba(246,207,98,.7); --bub: rgba(246,200,90,.55); --beam: rgba(255,200,90,.22); --wmo: .14; }
+.ut.special .wm { mix-blend-mode: screen; filter: grayscale(1) invert(1) brightness(.6); }
+.ut.icon { --fr: linear-gradient(135deg, #fff9e0, #c79a36 25%, #fff3c4 50%, #a77a22 75%, #fff2c0); --bg: radial-gradient(70% 45% at 60% 25%, #fff 0%, transparent 70%), linear-gradient(165deg, #ffffff 0%, #f7f0e1 40%, #ebdfc2 72%, #d8c38f 100%); --ink: #3a2a08; --acc: rgba(176,135,45,.85); --bub: rgba(200,160,70,.45); --beam: rgba(212,170,80,.35); --wmo: .09; }
 </style>
 </head>
 <body>
@@ -1029,16 +1039,17 @@ function playerCard(id, season) {
 }
 function cardHTML(c) {
   const j = S.jug.get(c.id); const tier = c.icon ? "icon" : c.ovr >= 85 ? "special" : c.ovr >= 75 ? "gold" : c.ovr >= 65 ? "silver" : "bronze";
-  const badges = (c.mvpW ? "🏆".repeat(Math.min(c.mvpW, 3)) : "") + (c.mvpntW ? "<br>" + "💩".repeat(Math.min(c.mvpntW, 3)) : "");
+  const badges = (c.mvpW ? "🏆".repeat(Math.min(c.mvpW, 3)) : "") + (c.mvpntW ? " " + "💩".repeat(Math.min(c.mvpntW, 3)) : "");
   const initials = j.nombre.split(/\s|\./).filter(Boolean).map(w => w[0]).join("").slice(0, 2).toUpperCase();
-  return `<button class="ut ${tier}" data-card="${c.id}" aria-label="Carta de ${esc(j.nombre)}, media ${c.ovr}">
-    <div class="ovr">${c.ovr}</div><div class="pos">${j.posicion ? esc(j.posicion) : j.fijo ? "FIJO" : "OPC"}${j.dorsal != null ? `<small style="display:block;font-size:.7em;opacity:.75;margin-top:2px">#${j.dorsal}</small>` : ""}</div>
-    <img class="crestsm" src="escudo.png" alt="">
-    <div class="badge">${badges}</div>
+  const lbl = c.icon ? "ICONO" : tier === "special" ? "EN RACHA" : "";
+  const st = c.st;
+  return `<button class="ut ${tier}" data-card="${c.id}" aria-label="Carta de ${esc(j.nombre)}, media ${c.ovr}"><div class="in">
+    <div class="beam"></div><div class="tex"></div><div class="wm"></div>
+    <div class="side"><div class="ovr">${c.ovr}</div><div class="pos">${j.posicion ? esc(j.posicion) : j.fijo ? "FIJO" : "OPC"}</div><div class="sep"></div><img class="crestsm" src="escudo.png" alt="">${j.dorsal != null ? `<div class="num">#${j.dorsal}</div>` : ""}<div class="badge">${badges}</div></div>
     <div class="face${j.foto ? " ph" : ""}">${j.foto ? `<img src="${fotoUrl(j.foto)}" crossorigin="anonymous" alt="">` : initials}</div>
-    <div class="nm">${esc(j.nombre)}</div>${c.icon ? '<div class="iconlbl">ICONO</div>' : ""}
-    <div class="st"><span><b>${c.st.ASI}</b>ASI</span><span><b>${c.st.FIA}</b>FIA</span><span><b>${c.st.BIR}</b>BIR</span><span><b>${c.st.RAC}</b>RAC</span><span><b>${c.st.MVP}</b>MVP</span><span><b>${c.st.POR}</b>POR</span></div>
-  </button>`;
+    <div class="plate"><div class="nm">${esc(j.nombre)}</div><div class="st"><div><span><b>${st.ASI}</b>ASI</span><span><b>${st.BIR}</b>BIR</span><span><b>${st.FIA}</b>FIA</span></div><div><span><b>${st.RAC}</b>RAC</span><span><b>${st.MVP}</b>MVP</span><span><b>${st.POR}</b>POR</span></div></div></div>
+    ${lbl ? `<div class="lbl">${lbl}</div>` : ""}
+  </div></button>`;
 }
 function renderCartas() {
   const season = $("#cardSeason").value || CUR_SEASON;
