@@ -33,7 +33,10 @@ Deno.serve(async (req) => {
   try { body = await req.json(); } catch { return json({ error: "JSON inválido" }, 400); }
 
   const { data: cfg } = await db.from("admin_config").select("value").eq("key", "pin_hash").maybeSingle();
-  if (!cfg || !body.pin || (await sha256(String(body.pin))) !== cfg.value) return json({ error: "PIN incorrecto" }, 401);
+  if (!cfg || !body.pin || (await sha256(String(body.pin))) !== cfg.value) {
+    await new Promise((r) => setTimeout(r, 800));
+    return json({ error: "PIN incorrecto" }, 401);
+  }
 
   const p = body.payload ?? {};
   let r;
@@ -59,6 +62,14 @@ Deno.serve(async (req) => {
       r = await db.from("multa_propuestas").delete().eq("id", p.id); break;
     case "mvp_delete":
       r = await db.from("votos_mvp").delete().eq("partido_id", p.partido_id).eq("votante_id", p.votante_id).eq("tipo", p.tipo); break;
+    case "foto_delete": {
+      const { data: f } = await db.from("fotos").select("path").eq("id", p.id).maybeSingle();
+      if (f?.path) await db.storage.from("fotos").remove([f.path]);
+      r = await db.from("fotos").delete().eq("id", p.id); break;
+    }
+    case "foto_update":
+      if (p.portada === true && p.partido_id) await db.from("fotos").update({ portada: false }).eq("partido_id", p.partido_id);
+      r = await db.from("fotos").update(pick(p, ["pie", "portada", "partido_id"])).eq("id", p.id).select(); break;
     case "liga_set":
       r = await db.from("liga").upsert({ id: "actual", data: p.data, updated_at: new Date().toISOString() }).select(); break;
     default:

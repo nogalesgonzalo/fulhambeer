@@ -241,3 +241,17 @@ create policy "lectura publica" on public.porras for select to anon, authenticat
 create policy "apostar" on public.porras for insert to anon, authenticated with check (public.porra_abierta(partido_id) and exists (select 1 from public.jugadores j where j.id = jugador_id and j.activo));
 create policy "cambiar apuesta" on public.porras for update to anon, authenticated using (public.porra_abierta(partido_id)) with check (public.porra_abierta(partido_id));
 grant select, insert, update on public.porras to anon, authenticated;
+
+-- Migración 3: galería de fotos (bucket público "fotos" + tabla fotos)
+-- insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types) values ('fotos','fotos',true,8388608,array['image/jpeg','image/png','image/webp']);
+-- create policy "fotos lectura publica" on storage.objects for select to anon, authenticated using (bucket_id = 'fotos');
+-- create policy "fotos subir" on storage.objects for insert to anon, authenticated with check (bucket_id = 'fotos' and (storage.foldername(name))[1] is not null);
+create table if not exists public.fotos (
+  id bigint generated always as identity primary key,
+  partido_id text references public.partidos(id) on update cascade on delete set null,
+  path text not null unique,
+  subido_por text references public.jugadores(id) on update cascade on delete set null,
+  pie text check (pie is null or length(pie) <= 140),
+  portada boolean not null default false,
+  created_at timestamptz not null default now()
+);

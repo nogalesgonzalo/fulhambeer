@@ -170,6 +170,35 @@ dialog::backdrop { background: rgba(0,0,0,0.45); }
 dialog .row { margin-top: 12px; }
 #whoList button { padding: 12px 10px; font: italic 800 18px/1 var(--display); text-transform: uppercase; justify-content: center; }
 #whoList button small { font: 600 12px/1 var(--display); color: var(--ink-3); margin-right: 6px; font-style: normal; }
+/* Cartas tipo UT */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 14px; }
+.ut { position: relative; aspect-ratio: 0.72; border-radius: 14px 14px 46% 46% / 14px 14px 18% 18%; padding: 12px 12px 18px; cursor: pointer; overflow: hidden; color: #2b1d05; font-family: var(--display); box-shadow: 0 6px 18px rgba(0,0,0,0.25); transition: transform .15s; border: 0; text-align: left; width: 100%; }
+.ut:hover { transform: translateY(-3px); }
+.ut.gold { background: linear-gradient(160deg, #fff3b0 0%, #f5c84a 35%, #c8901a 75%, #8a5a0a 100%); }
+.ut.silver { background: linear-gradient(160deg, #ffffff 0%, #d9dde3 40%, #9aa3ad 100%); color: #1d2329; }
+.ut.bronze { background: linear-gradient(160deg, #f6d2b0 0%, #c98a55 45%, #7a4a22 100%); color: #2a1406; }
+.ut.special { background: radial-gradient(120% 90% at 70% 10%, #e8661c 0%, #3a1a06 45%, #0d0d0d 100%); color: #f5b82e; }
+.ut { display: block; }
+.ut .ovr { position: absolute; top: 12px; left: 14px; font: italic 900 46px/0.9 var(--display); }
+.ut .pos { position: absolute; top: 58px; left: 16px; font: 800 15px/1 var(--display); letter-spacing: .06em; text-transform: uppercase; }
+.ut .crestsm { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; background: #fff; }
+.ut .face { position: absolute; top: 16%; left: 0; right: 0; text-align: center; font: italic 900 84px/1 var(--display); opacity: .22; letter-spacing: -.02em; }
+.ut .face img { width: 62%; aspect-ratio: 1; object-fit: cover; border-radius: 50%; opacity: 1; }
+.ut .nm { position: absolute; left: 0; right: 0; top: 55%; text-align: center; font: italic 900 22px/1 var(--display); text-transform: uppercase; letter-spacing: .02em; border-bottom: 1px solid currentColor; margin: 0 14px; padding-bottom: 4px; }
+.ut .st { position: absolute; left: 18px; right: 18px; top: 66%; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; font: 700 15px/1.25 var(--display); }
+.ut .st b { font-weight: 900; margin-right: 5px; }
+.ut .badge { position: absolute; left: 14px; top: 80px; font-size: 18px; line-height: 1.2; }
+.carddlg { max-width: 360px; background: var(--paper); }
+.carddlg .ut { cursor: default; font-size: 120%; }
+.carddlg .ut .ovr { font-size: 60px; } .carddlg .ut .pos { top: 74px; font-size: 18px; } .carddlg .ut .badge { top: 100px; } .carddlg .ut .nm { font-size: 28px; } .carddlg .ut .st { font-size: 18px; } .carddlg .ut .face { font-size: 110px; }
+.gal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
+.gal-grid button { border: 0; padding: 0; background: var(--line); border-radius: 8px; overflow: hidden; aspect-ratio: 1; cursor: pointer; position: relative; }
+.gal-grid img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gal-grid .cover::after { content: "★"; position: absolute; top: 4px; right: 6px; color: #f5b82e; text-shadow: 0 1px 2px #000; }
+.photodlg { max-width: 960px; padding: 12px; }
+.photodlg img { max-width: 100%; max-height: 72vh; display: block; margin: 0 auto; border-radius: 8px; }
+.thumbs { display: flex; gap: 6px; overflow-x: auto; }
+.thumbs img { height: 72px; border-radius: 6px; cursor: pointer; }
 .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 14px; border-radius: 8px; font-size: 14px; display: none; z-index: 10; max-width: calc(100% - 32px); }
 footer { padding: 24px 16px; text-align: center; }
 footer button { background: none; border: 0; color: var(--ink-3); font-size: 13px; cursor: pointer; text-decoration: underline; }
@@ -206,6 +235,8 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
       <a href="#partido" data-v="partido">Partido</a>
       <a href="#liga" data-v="liga">Liga</a>
       <a href="#stats" data-v="stats">Stats</a>
+      <a href="#cartas" data-v="cartas">Cartas</a>
+      <a href="#galeria" data-v="galeria">Galería</a>
       <a href="#multas" data-v="multas">Multas</a>
       <a href="#historico" data-v="historico">Histórico</a>
       <a href="#plantilla" data-v="plantilla" id="tabPlantilla" hidden>Plantilla</a>
@@ -300,6 +331,29 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
     </div>
   </section>
 
+  <section class="view" id="v-cartas">
+    <div class="row spread"><h2>Cartas Fulhambeer UT</h2><select id="cardSeason" aria-label="Temporada de las cartas"></select></div>
+    <p class="faint" style="margin:0">Media calculada con los datos de la app: ASI asistencia · BIR cervezas · FIA fiabilidad (bajas y bajas de última hora) · RAC mejor racha · MVP votos de MVP · POR puntos de porra. Pulsa una carta para verla en grande y compartirla.</p>
+    <div class="cards" id="cardsGrid"></div>
+  </section>
+
+  <section class="view" id="v-galeria">
+    <div class="row spread"><h2>📸 Galería</h2><span class="faint" id="galCount"></span></div>
+    <form class="card" id="upForm" style="display:grid;gap:10px">
+      <h3>Subir fotos</h3>
+      <div class="row">
+        <select id="upPart" aria-label="Partido de las fotos" style="flex:1;min-width:200px"></select>
+        <input type="text" id="upPie" maxlength="140" placeholder="Pie de foto (opcional)" style="flex:2;min-width:180px">
+      </div>
+      <div class="row">
+        <input type="file" id="upFiles" accept="image/*" multiple aria-label="Elegir fotos">
+        <button class="btn primary" type="submit" id="upBtn">Subir</button>
+        <span class="faint" id="upStatus"></span>
+      </div>
+    </form>
+    <div id="galeria"></div>
+  </section>
+
   <section class="view" id="v-historico">
     <div class="row spread"><h2>Histórico</h2><select id="histSeason" aria-label="Temporada"></select></div>
     <div class="card tbl-wrap"><table id="histTbl"></table></div>
@@ -317,6 +371,15 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
   <div class="crest" style="margin-bottom:6px"><img src="escudo.png" alt="" width="48" height="48"><h2 id="whoTitle">¿Quién eres?</h2></div>
   <p class="faint">Elige tu nombre para poder marcar la convocatoria, las cervezas y votar. Solo se pide una vez; el móvil se acuerda.</p>
   <div id="whoList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:10px"></div>
+</dialog>
+<dialog id="cardDlg" class="carddlg">
+  <div id="cardBig"></div>
+  <div class="row spread" style="margin-top:12px"><button class="btn" id="cardClose" type="button">Cerrar</button><button class="btn primary" id="cardShare" type="button">Compartir carta</button></div>
+</dialog>
+<dialog id="photoDlg" class="photodlg">
+  <img id="phImg" alt="">
+  <div class="row spread" style="margin-top:10px"><div><b id="phPie"></b> <span class="faint" id="phMeta"></span></div>
+    <div class="row"><button class="btn sm" id="phPrev" aria-label="Anterior">‹</button><button class="btn sm" id="phNext" aria-label="Siguiente">›</button><a class="btn sm" id="phOpen" target="_blank" rel="noopener">Original</a><button class="btn sm" id="phCover" hidden>Portada</button><button class="btn sm" id="phDel" hidden>Borrar</button><button class="btn sm" id="phClose">Cerrar</button></div></div>
 </dialog>
 <dialog id="pinDlg">
   <h2>Modo admin</h2>
@@ -341,6 +404,7 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
 <div class="toast" id="toast" role="status"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 (() => {
 "use strict";
@@ -373,7 +437,7 @@ const quedada = h => { if (!h) return null; const [H, M] = h.split(":").map(Numb
 const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
 function toast(msg) { const t = $("#toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(toast._t); toast._t = setTimeout(() => t.style.display = "none", 2800); }
 
-const S = { jug: new Map(), part: new Map(), resp: new Map(), log: [], multas: [], props: [], pvotos: [], mvp: [], porras: [], liga: null, me: store.get("fb_me"), pin: store.get("fb_pin"), sel: null, editing: null };
+const S = { jug: new Map(), part: new Map(), resp: new Map(), log: [], multas: [], props: [], pvotos: [], mvp: [], porras: [], fotos: [], liga: null, me: store.get("fb_me"), pin: store.get("fb_pin"), sel: null, editing: null };
 const isAdmin = () => !!S.pin;
 const rkey = (p, j) => p + "|" + j;
 const respOf = (p, j) => S.resp.get(rkey(p, j));
@@ -398,10 +462,10 @@ async function fetchAll(table, order) {
   return out;
 }
 async function loadAll() {
-  const [j, p, r, l, m, lg, pr, pv, mv, po] = await Promise.all([
+  const [j, p, r, l, m, lg, pr, pv, mv, po, fo] = await Promise.all([
     fetchAll("jugadores"), fetchAll("partidos", "fecha"), fetchAll("respuestas"), fetchAll("respuestas_log", "at"), fetchAll("multas", "created_at"),
-    sb.from("liga").select("*").eq("id", "actual").maybeSingle(), fetchAll("multa_propuestas", "created_at"), fetchAll("multa_votos"), fetchAll("votos_mvp"), fetchAll("porras")]);
-  S.props = pr; S.pvotos = pv; S.mvp = mv; S.porras = po;
+    sb.from("liga").select("*").eq("id", "actual").maybeSingle(), fetchAll("multa_propuestas", "created_at"), fetchAll("multa_votos"), fetchAll("votos_mvp"), fetchAll("porras"), fetchAll("fotos", "created_at")]);
+  S.props = pr; S.pvotos = pv; S.mvp = mv; S.porras = po; S.fotos = fo;
   S.jug = new Map(j.map(x => [x.id, x])); S.part = new Map(p.map(x => [x.id, x]));
   S.resp = new Map(r.map(x => [rkey(x.partido_id, x.jugador_id), x])); S.log = l; S.multas = m; S.liga = lg.data?.data || null;
 }
@@ -505,7 +569,9 @@ function renderPartido() {
   renderMvp(bm && bm.id !== S.sel ? bm : (p && p.fecha <= today ? p : null));
   renderPorra(p); loadWeather(p);
   if (!p) { $("#matchCard").innerHTML = `<p class="muted">No hay partidos programados.</p>`; $("#quorum").innerHTML = ""; $("#squad").innerHTML = ""; return; }
-  $("#matchCard").innerHTML = matchCardHTML(p) + (adm ? adminMatchEdit(p) : "");
+  const fs = S.fotos.filter(f => f.partido_id === p.id).sort((a, b) => b.portada - a.portada);
+  $("#matchCard").innerHTML = matchCardHTML(p) + (fs.length ? `<div class="thumbs">${fs.map(f => `<img src="${fotoUrl(f.path)}" alt="${esc(f.pie || "Foto")}" data-foto="${f.id}" loading="lazy">`).join("")}</div>` : "") + (adm ? adminMatchEdit(p) : "");
+  $("#matchCard").querySelectorAll("[data-foto]").forEach(im => im.onclick = () => { galList = fs; openPhoto(fs.findIndex(f => f.id == im.dataset.foto)); });
   if (adm) bindAdminMatch(p);
   const roster = rosterFor(p);
   const n = { si: 0, no: 0, duda: 0, pendiente: 0 };
@@ -925,8 +991,127 @@ function renderPlantilla() {
   });
 }
 
+/* ---------- CARTAS UT ---------- */
+const clamp = (v, a = 40, b = 99) => Math.max(a, Math.min(b, Math.round(v)));
+function playerCard(id, season) {
+  const all = parts().filter(p => p.fecha < today && competitive(p));
+  let ps = all.filter(p => season === "all" || p.temporada === season);
+  const conv = ps.filter(p => respOf(p.id, id)); if (conv.length < 2 && season !== "all") return playerCard(id, "all");
+  let va = 0, no = 0, streak = 0, best = 0, beerY = 0, beerN = 0;
+  conv.forEach(p => { const r = respOf(p.id, id); if (goes(r.estado)) { va++; streak++; best = Math.max(best, streak); } else streak = 0; if (r.estado === "no") no++; if (r.cerveza === true) beerY++; if (r.cerveza === false) beerN++; });
+  const ids = new Set(ps.map(p => p.id));
+  const lm = lastMinuteDrops().filter(x => x.jugador_id === id && ids.has(x.partido_id)).length;
+  const mvpVotes = S.mvp.filter(v => ids.has(v.partido_id) && v.elegido_id === id);
+  const mvpW = ps.filter(p => mvpWinner(p.id, "mvp") === id).length, mvpntW = ps.filter(p => mvpWinner(p.id, "mvpnt") === id).length;
+  const porra = (porraRanking(season).find(([j]) => j === id) || [null, { pts: 0 }])[1].pts;
+  const n = conv.length || 1;
+  const st = {
+    ASI: clamp(40 + 59 * va / n),
+    BIR: beerY + beerN ? clamp(40 + 59 * beerY / (beerY + beerN)) : 60,
+    FIA: clamp(99 - 45 * no / n - 12 * lm),
+    RAC: clamp(45 + best * 9),
+    MVP: clamp(45 + mvpVotes.filter(v => v.tipo === "mvp").length * 6 + mvpW * 10 - mvpVotes.filter(v => v.tipo === "mvpnt").length * 3),
+    POR: clamp(45 + porra * 3),
+  };
+  const ovr = clamp(st.ASI * .3 + st.BIR * .2 + st.FIA * .2 + st.RAC * .1 + st.MVP * .1 + st.POR * .1, 45, 99);
+  return { id, st, ovr, mvpW, mvpntW, conv: conv.length, va, seasonUsed: season };
+}
+function cardHTML(c) {
+  const j = S.jug.get(c.id); const tier = c.ovr >= 85 ? "special" : c.ovr >= 75 ? "gold" : c.ovr >= 65 ? "silver" : "bronze";
+  const badges = (c.mvpW ? "🏆".repeat(Math.min(c.mvpW, 3)) : "") + (c.mvpntW ? "<br>💩" : "");
+  const initials = j.nombre.split(/\s|\./).filter(Boolean).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+  return `<button class="ut ${tier}" data-card="${c.id}" aria-label="Carta de ${esc(j.nombre)}, media ${c.ovr}">
+    <div class="ovr">${c.ovr}</div><div class="pos">${j.dorsal != null ? "#" + j.dorsal : j.fijo ? "FIJO" : "OPC"}</div>
+    <img class="crestsm" src="escudo.png" alt="">
+    <div class="badge">${badges}</div>
+    <div class="face">${initials}</div>
+    <div class="nm">${esc(j.nombre)}</div>
+    <div class="st"><span><b>${c.st.ASI}</b>ASI</span><span><b>${c.st.FIA}</b>FIA</span><span><b>${c.st.BIR}</b>BIR</span><span><b>${c.st.RAC}</b>RAC</span><span><b>${c.st.MVP}</b>MVP</span><span><b>${c.st.POR}</b>POR</span></div>
+  </button>`;
+}
+function renderCartas() {
+  const season = $("#cardSeason").value || CUR_SEASON;
+  const ids = [...S.jug.values()].filter(j => j.activo && (j.fijo || j.en_ficha)).map(j => j.id);
+  const cards = ids.map(id => playerCard(id, season)).filter(c => c.conv > 0).sort((a, b) => b.ovr - a.ovr);
+  $("#cardsGrid").innerHTML = cards.map(cardHTML).join("") || '<p class="faint">Sin datos todavía.</p>';
+  $("#cardsGrid").querySelectorAll("[data-card]").forEach(b => b.onclick = () => openCard(b.dataset.card));
+}
+function openCard(id) {
+  const c = playerCard(id, $("#cardSeason").value || CUR_SEASON);
+  $("#cardBig").innerHTML = cardHTML(c) + `<p class="faint" style="text-align:center;margin:8px 0 0">${c.va}/${c.conv} partidos · ${c.seasonUsed === "all" ? "todas las temporadas" : "temporada " + c.seasonUsed}</p>`;
+  $("#cardDlg").showModal();
+}
+$("#cardClose").onclick = () => $("#cardDlg").close();
+$("#cardShare").onclick = async () => {
+  const el = $("#cardBig .ut"); if (!el || !window.html2canvas) return toast("No se pudo generar la imagen.");
+  try {
+    const canvas = await html2canvas(el, { backgroundColor: null, scale: 2 });
+    const blob = await new Promise(r => canvas.toBlob(r, "image/png"));
+    const file = new File([blob], `carta-${el.dataset.card}.png`, { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], title: "Fulhambeer UT" });
+    else { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }
+  } catch (e) { if (e.name !== "AbortError") toast("No se pudo compartir la carta."); }
+};
+$("#cardSeason").onchange = e => { e.target.dataset.touched = "1"; renderCartas(); };
+document.addEventListener("click", e => { const n = e.target.closest(".p[data-j] .n"); if (n && !e.target.closest("button,form")) openCard(n.closest(".p").dataset.j); });
+
+/* ---------- GALERÍA ---------- */
+const fotoUrl = path => sb.storage.from("fotos").getPublicUrl(path).data.publicUrl;
+const thumbUrl = path => fotoUrl(path);
+let galList = [], galIdx = 0;
+function renderGaleria() {
+  const played = parts().filter(p => p.fecha <= today).reverse();
+  const cur = $("#upPart").value;
+  $("#upPart").innerHTML = played.slice(0, 30).map(p => `<option value="${p.id}">${fmtDate(p.fecha)} · ${esc(p.rival || p.competicion)}</option>`).join("");
+  if (cur) $("#upPart").value = cur;
+  $("#upForm").querySelectorAll("input,select,button").forEach(el => el.disabled = !S.me);
+  $("#galCount").textContent = S.fotos.length ? `${S.fotos.length} foto${S.fotos.length === 1 ? "" : "s"}` : "";
+  const byP = {}; S.fotos.forEach(f => (byP[f.partido_id || "otros"] = byP[f.partido_id || "otros"] || []).push(f));
+  const order = Object.keys(byP).sort((a, b) => (S.part.get(b)?.fecha || "").localeCompare(S.part.get(a)?.fecha || ""));
+  galList = order.flatMap(k => byP[k]);
+  $("#galeria").innerHTML = order.map(k => { const p = S.part.get(k); const res = p && result(p);
+    return `<div class="card" style="display:grid;gap:10px;margin-bottom:12px"><div class="row spread"><h3>${p ? `${fmtDate(p.fecha)} · ${esc(p.rival || p.competicion)}` : "Otras"}</h3>${res ? `<span class="res ${res.r}">${res.gf}-${res.gc}</span>` : ""}</div>
+      <div class="gal-grid">${byP[k].map(f => `<button data-foto="${f.id}" class="${f.portada ? "cover" : ""}"><img loading="lazy" src="${thumbUrl(f.path)}" alt="${esc(f.pie || "Foto del partido")}"></button>`).join("")}</div></div>`; }).join("")
+    || '<p class="faint">Todavía no hay fotos. Sube la del último partido.</p>';
+  $("#galeria").querySelectorAll("[data-foto]").forEach(b => b.onclick = () => openPhoto(galList.findIndex(f => f.id == b.dataset.foto)));
+}
+function openPhoto(i) {
+  if (i < 0 || i >= galList.length) return; galIdx = i; const f = galList[i]; const p = S.part.get(f.partido_id);
+  $("#phImg").src = fotoUrl(f.path); $("#phImg").alt = f.pie || "Foto del partido"; $("#phOpen").href = fotoUrl(f.path);
+  $("#phPie").textContent = f.pie || (p ? `vs ${p.rival || ""}` : "");
+  $("#phMeta").textContent = `${p ? fmtDate(p.fecha) : ""}${f.subido_por ? " · subida por " + jName(f.subido_por) : ""}`;
+  $("#phDel").hidden = !isAdmin(); $("#phCover").hidden = !isAdmin();
+  if (!$("#photoDlg").open) $("#photoDlg").showModal();
+}
+$("#phPrev").onclick = () => openPhoto(galIdx - 1); $("#phNext").onclick = () => openPhoto(galIdx + 1); $("#phClose").onclick = () => $("#photoDlg").close();
+$("#phDel").onclick = async () => { const f = galList[galIdx]; try { await admin("foto_delete", { id: f.id }); $("#photoDlg").close(); await reload(); toast("Foto borrada."); } catch (e) { toast(e.message); } };
+$("#phCover").onclick = async () => { const f = galList[galIdx]; try { await admin("foto_update", { id: f.id, partido_id: f.partido_id, portada: true }); await reload(); toast("Foto de portada del partido."); } catch (e) { toast(e.message); } };
+async function shrink(file, max = 1800) {
+  const img = await createImageBitmap(file).catch(() => null); if (!img) return file;
+  const k = Math.min(1, max / Math.max(img.width, img.height));
+  const c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+  c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+  return await new Promise(r => c.toBlob(b => r(b || file), "image/jpeg", 0.85));
+}
+$("#upForm").onsubmit = async e => {
+  e.preventDefault(); if (!S.me) return askWho();
+  const files = [...$("#upFiles").files]; const pid = $("#upPart").value; if (!files.length || !pid) return toast("Elige el partido y las fotos.");
+  $("#upBtn").disabled = true; let ok = 0;
+  for (const [i, f] of files.entries()) {
+    $("#upStatus").textContent = `Subiendo ${i + 1}/${files.length}…`;
+    try {
+      const blob = await shrink(f); const path = `partidos/${pid}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+      const up = await sb.storage.from("fotos").upload(path, blob, { contentType: "image/jpeg", upsert: false }); if (up.error) throw up.error;
+      const ins = await sb.from("fotos").insert({ partido_id: pid, path, subido_por: S.me, pie: $("#upPie").value.trim() || null }); if (ins.error) throw ins.error;
+      ok++;
+    } catch (err) { toast("Error subiendo una foto: " + (err.message || err)); }
+  }
+  $("#upStatus").textContent = ok ? `✅ ${ok} foto${ok === 1 ? "" : "s"} subida${ok === 1 ? "" : "s"}` : ""; $("#upBtn").disabled = false; $("#upFiles").value = ""; $("#upPie").value = "";
+  await reload();
+};
+
 /* ---------- router ---------- */
-const VIEWS = ["partido", "liga", "stats", "multas", "historico", "plantilla"];
+const VIEWS = ["partido", "liga", "stats", "cartas", "galeria", "multas", "historico", "plantilla"];
 function route() {
   let v = location.hash.slice(1); if (!VIEWS.includes(v) || (v === "plantilla" && !isAdmin())) v = "partido";
   VIEWS.forEach(x => $("#v-" + x).classList.toggle("on", x === v));
@@ -935,7 +1120,8 @@ function route() {
 }
 function renderAll() {
   fillSeason($("#seasonSel")); fillSeason($("#histSeason"));
-  renderHeader(); renderPartido(); renderLiga(); renderStats(); renderMultas(); renderHist(); renderPlantilla();
+  fillSeason($("#cardSeason"));
+  renderHeader(); renderPartido(); renderLiga(); renderStats(); renderCartas(); renderGaleria(); renderMultas(); renderHist(); renderPlantilla();
   $("#adminBtn").textContent = isAdmin() ? "Salir del modo admin" : "Modo admin";
   if (S.editing) { const inp = document.querySelector(`.p[data-j="${S.editing.j}"] form[data-form] input`); if (inp && document.activeElement !== inp) { inp.focus({ preventScroll: false }); inp.scrollIntoView({ block: "center", behavior: "smooth" }); } }
 }
@@ -981,7 +1167,8 @@ loadAll().then(() => {
     const r = payload.new; if (r && r.partido_id) { S.resp.set(rkey(r.partido_id, r.jugador_id), r); if (!S.editing) renderAll(); }
   }).on("postgres_changes", { event: "*", schema: "public", table: "multa_votos" }, () => { if (!S.editing) reload(); })
     .on("postgres_changes", { event: "*", schema: "public", table: "votos_mvp" }, () => { if (!S.editing) reload(); })
-    .on("postgres_changes", { event: "*", schema: "public", table: "porras" }, () => { if (!S.editing) reload(); }).subscribe();
+    .on("postgres_changes", { event: "*", schema: "public", table: "porras" }, () => { if (!S.editing) reload(); })
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "fotos" }, () => { if (!S.editing) reload(); }).subscribe();
 }).catch(() => { $("#matchCard").innerHTML = `<p class="muted">No se pueden cargar los datos. Revisa la conexión y recarga.</p>`; });
 })();
 </script>
