@@ -900,7 +900,9 @@ function renderStats() {
       x.conv++; const g = goes(r.estado);
       if (g) { x.va++; n++; x.streak++; x.best = Math.max(x.best, x.streak); } else x.streak = 0;
       if (r.estado === "no") x.no++;
-      if (r.cerveza != null) { x.beerBase++; beerBase++; if (r.cerveza) { x.beer++; beerYes++; } }
+      if (r.cerveza != null) { beerBase++; if (r.cerveza) beerYes++; }
+      // % cervezas por jugador: si no juegas, cuenta como que no fuiste a las birras (salvo que marques que sí)
+      if (r.cerveza != null || !g) { x.beerBase++; if (r.cerveza === true) x.beer++; }
       rows.set(r.jugador_id, x);
     });
     avail.push({ p, n });
@@ -937,7 +939,7 @@ function renderStats() {
   const bar = (v, cls = "") => `<div class="barcell"><div class="track"><div class="fill ${cls}" style="width:${Math.round(v * 100)}%"></div></div><span class="num">${Math.round(v * 100)}%</span></div>`;
   $("#playerStats").innerHTML = `<thead><tr><th>Jugador</th><th class="r">Conv.</th><th class="r">Va</th><th class="r">No</th><th>% asistencia</th><th class="r">Racha máx.</th><th>% cervezas</th></tr></thead><tbody>` +
     list.sort((a, b) => b.va / b.conv - a.va / a.conv).map(r => `<tr><td><b>${esc(jName(r.id))}</b></td><td class="r num">${r.conv}</td><td class="r num">${r.va}</td><td class="r num">${r.no}</td><td>${bar(r.va / r.conv)}</td><td class="r num">${r.best}</td><td>${r.beerBase ? bar(r.beer / r.beerBase, "beer") : `<span class="faint">sin datos</span>`}</td></tr>`).join("") + "</tbody>";
-  $("#statsNote").textContent = `% asistencia = partidos con ✅ / partidos convocado (sin marca no cuenta). % cervezas = sí / respuestas de cerveza. ${onlyComp ? "Solo partidos de liga y copa." : "Incluye amistosos y partidos sin identificar."}`;
+  $("#statsNote").textContent = `% asistencia = partidos con ✅ / partidos convocado (sin marca no cuenta). % cervezas = veces que te quedas / partidos convocado (si no juegas, cuenta como que no fuiste; si juegas y no lo marcas, no cuenta). ${onlyComp ? "Solo partidos de liga y copa." : "Incluye amistosos y partidos sin identificar."}`;
 }
 function drawAvail(avail) {
   const box = $("#availChart"); const tip = box.querySelector(".tip"); box.querySelectorAll("svg").forEach(s => s.remove());
@@ -1044,7 +1046,7 @@ function playerCard(id, season, raw = false) {
   let ps = all.filter(p => inScope(p, season));
   const conv = ps.filter(p => respOf(p.id, id)); if (conv.length < 2 && season !== "all" && !raw) return playerCard(id, "all", raw);
   let va = 0, no = 0, streak = 0, best = 0, beerY = 0, beerN = 0;
-  conv.forEach(p => { const r = respOf(p.id, id); if (goes(r.estado)) { va++; streak++; best = Math.max(best, streak); } else streak = 0; if (r.estado === "no") no++; if (r.cerveza === true) beerY++; if (r.cerveza === false) beerN++; });
+  conv.forEach(p => { const r = respOf(p.id, id); if (goes(r.estado)) { va++; streak++; best = Math.max(best, streak); } else streak = 0; if (r.estado === "no") no++; if (r.cerveza === true) beerY++; else if (r.cerveza === false || !goes(r.estado)) beerN++; });
   const ids = new Set(ps.map(p => p.id));
   const lm = lastMinuteDrops().filter(x => x.jugador_id === id && ids.has(x.partido_id)).length;
   const mvpVotes = S.mvp.filter(v => ids.has(v.partido_id) && v.elegido_id === id);
