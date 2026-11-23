@@ -168,6 +168,8 @@ tr.click:hover td { background: rgba(127,127,127,0.08); }
 dialog { border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); max-width: 560px; width: calc(100% - 32px); padding: 18px; }
 dialog::backdrop { background: rgba(0,0,0,0.45); }
 dialog .row { margin-top: 12px; }
+#whoList button { padding: 12px 10px; font: italic 800 18px/1 var(--display); text-transform: uppercase; justify-content: center; }
+#whoList button small { font: 600 12px/1 var(--display); color: var(--ink-3); margin-right: 6px; font-style: normal; }
 .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 14px; border-radius: 8px; font-size: 14px; display: none; z-index: 10; max-width: calc(100% - 32px); }
 footer { padding: 24px 16px; text-align: center; }
 footer button { background: none; border: 0; color: var(--ink-3); font-size: 13px; cursor: pointer; text-decoration: underline; }
@@ -311,6 +313,11 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
 </main>
 <footer><button id="adminBtn">Modo admin</button></footer>
 
+<dialog id="whoDlg" aria-labelledby="whoTitle">
+  <div class="crest" style="margin-bottom:6px"><img src="escudo.png" alt="" width="48" height="48"><h2 id="whoTitle">¿Quién eres?</h2></div>
+  <p class="faint">Elige tu nombre para poder marcar la convocatoria, las cervezas y votar. Solo se pide una vez; el móvil se acuerda.</p>
+  <div id="whoList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:10px"></div>
+</dialog>
 <dialog id="pinDlg">
   <h2>Modo admin</h2>
   <p class="faint">Para editar partidos anteriores, resultados, multas y plantilla.</p>
@@ -396,6 +403,7 @@ async function admin(action, payload) {
   return data;
 }
 async function saveResp(row) {
+  if (!S.me && !isAdmin()) { askWho(); return false; }
   const body = { partido_id: row.partido_id, jugador_id: row.jugador_id, estado: row.estado || "pendiente", motivo: row.motivo || null, cerveza: row.cerveza ?? null, motivo_cerveza: row.motivo_cerveza || null };
   try {
     if (isAdmin()) await admin("respuesta_upsert", body);
@@ -610,6 +618,13 @@ function renderMvp(p) {
     const i = S.mvp.findIndex(v => v.partido_id === p.id && v.votante_id === S.me && v.tipo === body.tipo); i >= 0 ? S.mvp[i] = body : S.mvp.push(body);
     toast("Voto registrado."); renderMvp(p);
   });
+}
+function askWho() {
+  if (S.me && S.jug.has(S.me)) return;
+  const opts = [...S.jug.values()].filter(j => j.activo && (j.fijo || j.en_ficha)).sort((a, b) => (b.fijo - a.fijo) || (a.orden ?? 99) - (b.orden ?? 99) || a.nombre.localeCompare(b.nombre));
+  $("#whoList").innerHTML = opts.map(j => `<button class="btn" data-who="${j.id}">${j.dorsal != null ? `<small>${j.dorsal}</small>` : ""}${esc(j.nombre)}</button>`).join("");
+  $("#whoList").querySelectorAll("[data-who]").forEach(b => b.onclick = () => { S.me = b.dataset.who; store.set("fb_me", S.me); $("#whoDlg").close(); renderAll(); toast(`Hola, ${jName(S.me)} 🍺`); });
+  const d = $("#whoDlg"); d.addEventListener("cancel", e => e.preventDefault()); if (!d.open) d.showModal();
 }
 function promptMe(id) { S.me = id; store.set("fb_me", id); $("#meSel").value = id; toast(`Te recordamos como ${jName(id)}. Puedes cambiarlo arriba.`); }
 
@@ -909,7 +924,7 @@ async function reload() { await loadAll(); renderAll(); }
 
 /* ---------- events ---------- */
 addEventListener("hashchange", route);
-$("#meSel").onchange = e => { S.me = e.target.value || null; store.set("fb_me", S.me); renderAll(); };
+$("#meSel").onchange = e => { S.me = e.target.value || null; store.set("fb_me", S.me); renderAll(); if (!S.me) askWho(); };
 $("#matchSel").onchange = e => { S.sel = e.target.value; S.editing = null; renderPartido(); };
 $("#optAdd").onclick = async () => { const id = $("#optSel").value; const p = S.part.get(S.sel); if (!id || !p) return; if (await saveResp({ partido_id: p.id, jugador_id: id, estado: "pendiente" })) renderAll(); };
 $("#copyBtn").onclick = async () => { const p = S.part.get(S.sel); if (!p) return; try { await navigator.clipboard.writeText(waText(p)); toast("Resumen copiado. Pégalo en el grupo."); } catch { toast("No se pudo copiar."); } };
@@ -942,7 +957,7 @@ $("#histSeason").onchange = e => { e.target.dataset.touched = "1"; renderHist();
 /* ---------- boot ---------- */
 route();
 loadAll().then(() => {
-  renderAll();
+  renderAll(); askWho();
   sb.channel("cambios").on("postgres_changes", { event: "*", schema: "public", table: "respuestas" }, payload => {
     const r = payload.new; if (r && r.partido_id) { S.resp.set(rkey(r.partido_id, r.jugador_id), r); if (!S.editing) renderAll(); }
   }).on("postgres_changes", { event: "*", schema: "public", table: "multa_votos" }, () => { if (!S.editing) reload(); })
