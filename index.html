@@ -361,6 +361,14 @@ const dow = iso => DOW[new Date(iso + "T12:00:00").getDay()];
 const titleCase = s => String(s || "").toLowerCase().replace(/(^|\s)(\S)/g, (a, b, c) => b + c.toUpperCase());
 const CAMPOS = { "VC ATLETISMO -F7A": "Valle de las Cañas (Atletismo F7-A)", "CARLOS RUIZ F7": "Polideportivo Carlos Ruiz F7", "PRADILLO F7-1": "Pradillo F7-1" };
 const campo = c => CAMPOS[c] || titleCase(c);
+// Direcciones de los campos para "Cómo llegar"
+const SEDES = [
+  { k: "valle", dir: "Polideportivo Valle de las Cañas, Av. Juan Antonio Samaranch Torelló 8, 28223 Pozuelo de Alarcón" },
+  { k: "carlos ruiz", dir: "Polideportivo Carlos Ruiz, Avenida de Italia 3, 28224 Pozuelo de Alarcón" },
+  { k: "pradillo", dir: "Campo Pradillo F7, Pozuelo de Alarcón" },
+];
+const sedeDir = l => { const n = norm(l); const x = SEDES.find(s0 => n.includes(s0.k)); return x ? x.dir : (l ? l + ", Pozuelo de Alarcón" : null); };
+const mapsUrl = l => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(sedeDir(l));
 const quedada = h => { if (!h) return null; const [H, M] = h.split(":").map(Number); const t = H * 60 + M - 30; return `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`; };
 const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
 function toast(msg) { const t = $("#toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(toast._t); toast._t = setTimeout(() => t.style.display = "none", 2800); }
@@ -454,8 +462,9 @@ function matchCardHTML(p) {
     : `<div class="score">${p.hora || "--:--"}<small>${p.fecha < today ? "Sin resultado" : dow(p.fecha)}</small></div>`;
   return `<div class="row spread"><span class="chip">${p.competicion === "Liga" && p.jornada ? "Jornada " + p.jornada : esc(p.competicion)} · ${esc(p.temporada)}</span>${p.fecha === today ? '<span class="chip">Hoy</span>' : ""}</div>
     <div class="fixture">${home ? us + mid + them : them + mid + us}</div>
-    <div class="meta"><span><b>${dow(p.fecha)} ${fmtDate(p.fecha)}</b></span>${p.hora ? `<span>Hora <b>${p.hora}</b> · quedada ${quedada(p.hora)}</span>` : ""}${p.lugar ? `<span>📍 <b>${esc(p.lugar)}</b></span>` : ""}${p.condicion ? `<span>${esc(p.condicion)}</span>` : ""}</div>
-    ${p.fecha >= today ? `<div class="row"><span class="weather faint" data-wx="${p.id}">${wxCache[p.id] || ""}</span><span style="flex:1"></span><button class="btn sm" data-ics="${p.id}">📅 Añadir al calendario</button><a class="btn sm" target="_blank" rel="noopener" href="${gcalUrl(p)}">Google Calendar</a><button class="btn sm" data-ics="season">Toda la temporada</button></div>` : ""}`;
+    <div class="meta"><span><b>${dow(p.fecha)} ${fmtDate(p.fecha)}</b></span>${p.hora ? `<span>Hora <b>${p.hora}</b> · quedada ${quedada(p.hora)}</span>` : ""}${p.lugar ? `<span>📍 <a href="${mapsUrl(p.lugar)}" target="_blank" rel="noopener" style="color:inherit"><b>${esc(p.lugar)}</b></a></span>` : ""}${p.condicion ? `<span>${esc(p.condicion)}</span>` : ""}</div>
+    ${p.lugar && p.fecha >= today ? `<div class="faint">${esc(sedeDir(p.lugar))}</div>` : ""}
+    ${p.fecha >= today ? `<div class="row"><span class="weather faint" data-wx="${p.id}">${wxCache[p.id] || ""}</span><span style="flex:1"></span>${p.lugar ? `<a class="btn sm" target="_blank" rel="noopener" href="${mapsUrl(p.lugar)}">🧭 Cómo llegar</a>` : ""}<button class="btn sm" data-ics="${p.id}">📅 Añadir al calendario</button><a class="btn sm" target="_blank" rel="noopener" href="${gcalUrl(p)}">Google Calendar</a><button class="btn sm" data-ics="season">Toda la temporada</button></div>` : ""}`;
 }
 function rosterFor(p) {
   const ids = new Set(fijos().map(j => j.id));
@@ -649,13 +658,13 @@ const icsDate = (iso, hhmm, addMin = 0) => { const [H, M] = hhmm.split(":").map(
 const evTitle = p => `⚽ Fulhambeer vs ${p.rival || "rival"}${p.jornada ? " (J" + p.jornada + ")" : ""}`;
 function gcalUrl(p) {
   if (!p.hora) return "#";
-  const q = new URLSearchParams({ action: "TEMPLATE", text: evTitle(p), dates: `${icsDate(p.fecha, p.hora, -30)}/${icsDate(p.fecha, p.hora, 90)}`, ctz: "Europe/Madrid", location: p.lugar || "", details: `Quedada ${quedada(p.hora)} · partido ${p.hora}. Convocatoria: ${location.href.split("#")[0]}` });
+  const q = new URLSearchParams({ action: "TEMPLATE", text: evTitle(p), dates: `${icsDate(p.fecha, p.hora, -30)}/${icsDate(p.fecha, p.hora, 90)}`, ctz: "Europe/Madrid", location: sedeDir(p.lugar) || "", details: `Quedada ${quedada(p.hora)} · partido ${p.hora}. Convocatoria: ${location.href.split("#")[0]}` });
   return "https://calendar.google.com/calendar/render?" + q.toString();
 }
 function downloadIcs(list, name) {
   const ev = list.filter(p => p.hora).map(p => ["BEGIN:VEVENT", `UID:${p.id}@fulhambeer`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
     `DTSTART;TZID=Europe/Madrid:${icsDate(p.fecha, p.hora, -30)}`, `DTEND;TZID=Europe/Madrid:${icsDate(p.fecha, p.hora, 90)}`,
-    `SUMMARY:${evTitle(p)}`, `LOCATION:${(p.lugar || "").replace(/,/g, "\\,")}`, `DESCRIPTION:Quedada ${quedada(p.hora)} · partido ${p.hora}`, "END:VEVENT"].join("\r\n"));
+    `SUMMARY:${evTitle(p)}`, `LOCATION:${(sedeDir(p.lugar) || "").replace(/,/g, "\\,")}`, `DESCRIPTION:Quedada ${quedada(p.hora)} · partido ${p.hora}`, "END:VEVENT"].join("\r\n"));
   const txt = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Fulhambeer//ES", "CALSCALE:GREGORIAN", ...ev, "END:VCALENDAR"].join("\r\n");
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([txt], { type: "text/calendar" })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
@@ -715,6 +724,7 @@ function waText(p) {
   lines.push(`Día: ${dow(p.fecha)} ${fmtDate(p.fecha)}${p.lugar ? " · " + p.lugar.toUpperCase() : ""}`);
   if (p.hora) { lines.push(`Hora: ${p.hora}`); lines.push(`${quedada(p.hora)} en el campo`); }
   if (p.condicion) lines.push(p.condicion.toUpperCase());
+  if (p.lugar) lines.push(`📍 ${mapsUrl(p.lugar)}`);
   lines.push("");
   const roster = rosterFor(p);
   roster.forEach(id => { const j = S.jug.get(id); const r = respOf(p.id, id); lines.push(`${j?.dorsal != null ? j.dorsal + " " : ""}${jName(id)}${mark[r?.estado || "pendiente"]}`); });
