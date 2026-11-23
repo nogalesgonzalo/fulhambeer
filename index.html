@@ -663,9 +663,15 @@ document.addEventListener("click", e => { const b = e.target.closest("[data-ics]
 
 /* porra */
 const kickoff = p => new Date(`${p.fecha}T${p.hora || "23:59"}:00`);
-const porraPts = (x, p) => { const r = result(p); if (!r) return null; if (x.gf === r.gf && x.gc === r.gc) return 3; return Math.sign(x.gf - x.gc) === Math.sign(r.gf - r.gc) ? 1 : 0; };
+// 5 exacto · 3 diferencia de goles · 2 ganador + goles de un equipo · 1 ganador/empate
+const porraPts = (x, p) => { const r = result(p); if (!r) return null;
+  if (x.gf === r.gf && x.gc === r.gc) return 5;
+  if (Math.sign(x.gf - x.gc) !== Math.sign(r.gf - r.gc)) return 0;
+  if (x.gf - x.gc === r.gf - r.gc) return 3;
+  if (x.gf === r.gf || x.gc === r.gc) return 2;
+  return 1; };
 function porraRanking(season) {
-  const pts = {}; S.porras.forEach(x => { const p = S.part.get(x.partido_id); if (!p || (season !== "all" && p.temporada !== season)) return; const v = porraPts(x, p); if (v == null) return; (pts[x.jugador_id] = pts[x.jugador_id] || { pts: 0, exact: 0, n: 0 }); pts[x.jugador_id].pts += v; pts[x.jugador_id].n++; if (v === 3) pts[x.jugador_id].exact++; });
+  const pts = {}; S.porras.forEach(x => { const p = S.part.get(x.partido_id); if (!p || (season !== "all" && p.temporada !== season)) return; const v = porraPts(x, p); if (v == null) return; (pts[x.jugador_id] = pts[x.jugador_id] || { pts: 0, exact: 0, n: 0 }); pts[x.jugador_id].pts += v; pts[x.jugador_id].n++; if (v === 5) pts[x.jugador_id].exact++; });
   return Object.entries(pts).sort((a, b) => b[1].pts - a[1].pts || b[1].exact - a[1].exact);
 }
 function renderPorra(p) {
@@ -676,8 +682,8 @@ function renderPorra(p) {
   const rk = porraRanking(CUR_SEASON).slice(0, 5);
   box.innerHTML = `<div class="card" style="display:grid;gap:10px"><div class="row spread"><h2>🔮 Porra</h2><span class="chip">${open ? "Cierra a las " + (p.hora || "23:59") + " del " + fmtDate(p.fecha).slice(0, 5) : res ? `Resultado ${res.gf}-${res.gc}` : "Cerrada"}</span></div>
     ${open ? (S.me ? `<form class="row" id="porraForm"><span>Fulhambeer</span><input type="number" min="0" max="30" id="pGf" value="${mine?.gf ?? ""}" style="width:64px" required aria-label="Goles Fulhambeer"> – <input type="number" min="0" max="30" id="pGc" value="${mine?.gc ?? ""}" style="width:64px" required aria-label="Goles rival"><span>${esc(p.rival || "Rival")}</span><button class="btn primary" type="submit">${mine ? "Cambiar" : "Apostar"}</button></form>` : '<p class="faint" style="margin:0">Elige quién eres arriba para apostar.</p>') : ""}
-    <div class="preview" style="display:flex;flex-wrap:wrap;gap:6px">${list.map(x => { const v = porraPts(x, p); return `<span class="chip" style="background:${v === 3 ? "var(--good-soft)" : "var(--accent-soft)"};color:${v === 3 ? "var(--good)" : "var(--ink)"}">${esc(jName(x.jugador_id))} ${x.gf}-${x.gc}${v != null ? ` · +${v}` : ""}</span>`; }).join("") || '<span class="faint">Nadie ha apostado todavía.</span>'}</div>
-    <p class="faint" style="margin:0">Resultado exacto +3 · ganador o empate acertado +1.${rk.length ? " Pitonisos de la temporada: " + rk.map(([id, v], i) => `${i + 1}. ${esc(jName(id))} (${v.pts})`).join(" · ") : ""}</p></div>`;
+    <div class="preview" style="display:flex;flex-wrap:wrap;gap:6px">${list.map(x => { const v = porraPts(x, p); return `<span class="chip" style="background:${v === 5 ? "var(--good-soft)" : "var(--accent-soft)"};color:${v === 5 ? "var(--good)" : "var(--ink)"}">${esc(jName(x.jugador_id))} ${x.gf}-${x.gc}${v != null ? ` · +${v}` : ""}</span>`; }).join("") || '<span class="faint">Nadie ha apostado todavía.</span>'}</div>
+    <p class="faint" style="margin:0">Exacto +5 · diferencia de goles +3 · ganador y goles de un equipo +2 · ganador o empate +1.${rk.length ? " Pitonisos de la temporada: " + rk.map(([id, v], i) => `${i + 1}. ${esc(jName(id))} (${v.pts})`).join(" · ") : ""}</p></div>`;
   const f = $("#porraForm"); if (f) f.onsubmit = async e => {
     e.preventDefault(); const body = { partido_id: p.id, jugador_id: S.me, gf: +$("#pGf").value, gc: +$("#pGc").value };
     const { error } = await sb.from("porras").upsert(body); if (error) return toast("No se pudo guardar la apuesta: " + error.message);
