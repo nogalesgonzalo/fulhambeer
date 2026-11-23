@@ -501,7 +501,7 @@ function rowHTML(p, id, canEdit, showBeer) {
   const btn = (v, lbl, title) => `<button class="${v}" aria-pressed="${st === v}" data-v="${v}" title="${title}" ${canEdit ? "" : "disabled"}>${lbl}</button>`;
   const why = [];
   if (st === "no" && r.motivo) why.push(`<b>Motivo:</b> ${esc(r.motivo)}`);
-  if (showBeer && (r.cerveza != null || p.fecha <= today) && st !== "no") why.push(r.cerveza === true ? `🍺 Se quedó${r.motivo_cerveza ? ": " + esc(r.motivo_cerveza) : ""}` : r.cerveza === false ? `🚫🍺 <b>Sin cerveza:</b> ${esc(r.motivo_cerveza || "")}` : '<span class="faint">🍺 sin marcar</span>');
+  if (showBeer && (r.cerveza != null || p.fecha <= today) && st !== "no") why.push(r.cerveza === true ? `🍺 Se quedó${r.motivo_cerveza ? ": " + esc(r.motivo_cerveza) : ""}` : r.cerveza === false ? `🚫🍺 <b>Sin cerveza</b>${r.motivo_cerveza ? ": " + esc(r.motivo_cerveza) : ""}` : '<span class="faint">🍺 sin marcar</span>');
   return `<div class="p st-${st}${id === S.me ? " mine" : ""}" data-j="${id}">
     <div class="d num">${j?.dorsal ?? ""}</div>
     <div class="n">${esc(jName(id))}${j?.fijo ? "" : j?.invitado ? "<small>invitado</small>" : j?.en_ficha ? "<small>opcional</small>" : ""}${id === S.me ? "<small>tú</small>" : ""}</div>
@@ -512,9 +512,11 @@ function rowHTML(p, id, canEdit, showBeer) {
   </div>`;
 }
 function editorHTML(kind, r, extraStyle = "") {
-  const ph = { no: "¿Por qué no vienes? (obligatorio)", beer: "¿Por qué no te quedas? O propón plan alternativo (obligatorio)", beeryes: "Comentario (opcional): ¿dónde vamos?, ¿quién paga?…" }[kind];
-  const val = kind === "no" ? r.motivo || "" : r.motivo_cerveza || "";
-  return `<form class="edit" data-form="${kind}" style="${extraStyle}"><input type="text" ${kind === "beeryes" ? "" : 'required minlength="3"'} maxlength="140" placeholder="${ph}" value="${esc(val)}" aria-label="Comentario"><button class="btn primary" type="submit">Guardar</button><button class="btn" type="button" data-cancel>${kind === "beeryes" ? "Sin comentario" : "Cancelar"}</button></form>`;
+  if (isAdmin() && kind !== "beeryes") kind = kind + "-adm";
+  const ph = { no: "¿Por qué no vienes? (obligatorio)", beer: "¿Por qué no te quedas? O propón plan alternativo (obligatorio)", beeryes: "Comentario (opcional): ¿dónde vamos?, ¿quién paga?…", "no-adm": "Motivo (opcional en modo admin)", "beer-adm": "Motivo (opcional en modo admin)" }[kind];
+  const val = kind.startsWith("no") ? r.motivo || "" : r.motivo_cerveza || "";
+  const optional = kind === "beeryes" || kind.endsWith("-adm");
+  return `<form class="edit" data-form="${kind}" style="${extraStyle}"><input type="text" ${optional ? "" : 'required minlength="3"'} maxlength="140" placeholder="${ph}" value="${esc(val)}" aria-label="Comentario"><button class="btn primary" type="submit">Guardar</button><button class="btn" type="button" data-cancel>${kind === "beeryes" ? "Sin comentario" : "Cancelar"}</button>${kind === "no-adm" || kind === "beer-adm" ? '<button class="btn" type="submit" data-skip>Guardar sin motivo</button>' : ""}</form>`;
 }
 function bindRows(root, p) {
   root.querySelectorAll(".p[data-j]").forEach(row => {
@@ -533,14 +535,15 @@ function bindRows(root, p) {
     const f = row.querySelector("form[data-form]");
     if (f) {
       f.onsubmit = async e => {
-        e.preventDefault(); const kind = f.dataset.form; const txt = f.querySelector("input").value.trim(); if (kind !== "beeryes" && txt.length < 3) return;
+        e.preventDefault(); const kind = f.dataset.form.replace("-adm", ""); const txt = f.querySelector("input").value.trim(); if (kind !== "beeryes" && !isAdmin() && txt.length < 3) return;
         const cur = respOf(p.id, id) || { partido_id: p.id, jugador_id: id };
-        const ok = kind === "no" ? await saveResp({ ...cur, estado: "no", motivo: txt })
-          : kind === "beer" ? await saveResp({ ...cur, estado: cur.estado || "pendiente", cerveza: false, motivo_cerveza: txt })
+        const ok = kind === "no" ? await saveResp({ ...cur, estado: "no", motivo: txt || null })
+          : kind === "beer" ? await saveResp({ ...cur, estado: cur.estado || "pendiente", cerveza: false, motivo_cerveza: txt || null })
           : await saveResp({ ...cur, estado: cur.estado || "pendiente", cerveza: true, motivo_cerveza: txt || null });
         if (ok) { S.editing = null; if (!S.me) promptMe(id); renderAll(); }
       };
       f.querySelector("[data-cancel]").onclick = () => { S.editing = null; renderAll(); };
+      const skip = f.querySelector("[data-skip]"); if (skip) skip.addEventListener("click", () => { f.querySelector("input").value = ""; });
     }
   });
 }
@@ -721,7 +724,7 @@ function renderLiga() {
 
 /* ---------- STATS ---------- */
 const seasons = () => [...new Set(parts().map(p => p.temporada))].sort().reverse();
-function fillSeason(sel) { const cur = sel.value; const ss = seasons(); sel.innerHTML = `<option value="all">Todas las temporadas</option>` + ss.map(s => `<option value="${s}">Temporada ${s}</option>`).join(""); sel.value = cur && [...sel.options].some(o => o.value === cur) ? cur : (ss.includes(CUR_SEASON) ? CUR_SEASON : ss[0] || "all"); }
+function fillSeason(sel) { const cur = sel.dataset.touched ? sel.value : null; const ss = seasons(); sel.innerHTML = `<option value="all">Todas las temporadas</option>` + ss.map(s => `<option value="${s}">Temporada ${s}</option>`).join(""); sel.value = cur && [...sel.options].some(o => o.value === cur) ? cur : (ss.includes(CUR_SEASON) ? CUR_SEASON : ss[0] || "all"); }
 function lastMinuteDrops() {
   // a change to "no" logged within 48h before the match kickoff day
   return S.log.filter(l => l.estado === "no").map(l => ({ ...l, p: S.part.get(l.partido_id) })).filter(l => l.p && new Date(l.p.fecha + "T" + (l.p.hora || "12:00") + ":00") - new Date(l.at) <= 48 * 3600e3 && new Date(l.at) <= new Date(l.p.fecha + "T23:59:00"))
@@ -917,8 +920,8 @@ $("#propForm").onsubmit = async e => {
   $("#pConc").value = ""; await reload(); toast("Multa propuesta. ¡A votar!");
 };
 $("#mAdd").onclick = async () => { const imp = +$("#mImp").value; const c = $("#mConc").value.trim(); if (!c) return toast("Escribe el concepto."); try { await admin("multa_insert", { jugador_id: $("#mJug").value, partido_id: $("#mPart").value || null, concepto: c, importe: imp || 0 }); $("#mConc").value = ""; $("#mImp").value = ""; await reload(); } catch (e) { toast(e.message); } };
-["#seasonSel", "#onlyComp"].forEach(s => $(s).onchange = () => { renderStats(); renderHist(); });
-$("#histSeason").onchange = renderHist; $("#onlyUs").onchange = renderLiga; $("#showInactive").onchange = renderPlantilla;
+["#seasonSel", "#onlyComp"].forEach(s => $(s).onchange = e => { e.target.dataset.touched = "1"; renderStats(); renderHist(); });
+$("#histSeason").onchange = e => { e.target.dataset.touched = "1"; renderHist(); }; $("#onlyUs").onchange = renderLiga; $("#showInactive").onchange = renderPlantilla;
 
 /* ---------- boot ---------- */
 route();
