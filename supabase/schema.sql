@@ -269,3 +269,6 @@ begin
 end $$;
 revoke all on function public.set_foto_perfil(text, text) from public;
 grant execute on function public.set_foto_perfil(text, text) to anon, authenticated;
+
+-- Migración 5: cartas icono (media fija)
+alter table public.jugadores add column if not exists icono smallint check (icono is null or icono between 40 and 99);

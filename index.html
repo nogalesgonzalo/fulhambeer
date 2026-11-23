@@ -182,6 +182,10 @@ dialog .row { margin-top: 12px; }
 .ut.bronze { background: linear-gradient(160deg, #f6d2b0 0%, #c98a55 45%, #7a4a22 100%); color: #2a1406; }
 .ut.special { background: radial-gradient(120% 90% at 70% 10%, #e8661c 0%, #3a1a06 45%, #0d0d0d 100%); color: #f5b82e; }
 .ut { display: block; }
+.ut.icon { background: radial-gradient(90% 60% at 50% 30%, rgba(255,255,255,.95), rgba(255,255,255,0) 70%), linear-gradient(155deg, #fffaf0 0%, #f4e7c5 30%, #fffdf7 48%, #e6cf95 70%, #b8913f 100%); color: #3b2a07; box-shadow: 0 0 0 2px #d4b05a inset, 0 0 0 5px #fff8e6 inset, 0 0 0 6px #c9a14a inset, 0 8px 24px rgba(160,120,30,.45); }
+.ut.icon::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.55) 45%, transparent 55%); pointer-events: none; }
+.ut.icon .nm { border-bottom-color: #c9a14a; }
+.ut .iconlbl { position: absolute; left: 0; right: 0; bottom: 7%; text-align: center; font: 900 11px/1 var(--display); letter-spacing: .35em; color: #a7812d; }
 .ut .ovr { position: absolute; top: 12px; left: 14px; font: italic 900 46px/0.9 var(--display); }
 .ut .pos { position: absolute; top: 58px; left: 16px; font: 800 15px/1 var(--display); letter-spacing: .06em; text-transform: uppercase; }
 .ut .crestsm { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; background: #fff; }
@@ -998,6 +1002,8 @@ function renderPlantilla() {
 /* ---------- CARTAS UT ---------- */
 const clamp = (v, a = 40, b = 99) => Math.max(a, Math.min(b, Math.round(v)));
 function playerCard(id, season) {
+  const jj = S.jug.get(id);
+  if (jj?.icono && season !== "all") return { ...playerCard(id, "all"), icon: true, ovr: jj.icono };
   const all = parts().filter(p => p.fecha < today && competitive(p));
   let ps = all.filter(p => season === "all" || p.temporada === season);
   const conv = ps.filter(p => respOf(p.id, id)); if (conv.length < 2 && season !== "all") return playerCard(id, "all");
@@ -1022,7 +1028,7 @@ function playerCard(id, season) {
   return { id, st, base, ovr, mvpW, mvpntW, conv: conv.length, va, seasonUsed: season };
 }
 function cardHTML(c) {
-  const j = S.jug.get(c.id); const tier = c.ovr >= 85 ? "special" : c.ovr >= 75 ? "gold" : c.ovr >= 65 ? "silver" : "bronze";
+  const j = S.jug.get(c.id); const tier = c.icon ? "icon" : c.ovr >= 85 ? "special" : c.ovr >= 75 ? "gold" : c.ovr >= 65 ? "silver" : "bronze";
   const badges = (c.mvpW ? "🏆".repeat(Math.min(c.mvpW, 3)) : "") + (c.mvpntW ? "<br>" + "💩".repeat(Math.min(c.mvpntW, 3)) : "");
   const initials = j.nombre.split(/\s|\./).filter(Boolean).map(w => w[0]).join("").slice(0, 2).toUpperCase();
   return `<button class="ut ${tier}" data-card="${c.id}" aria-label="Carta de ${esc(j.nombre)}, media ${c.ovr}">
@@ -1030,7 +1036,7 @@ function cardHTML(c) {
     <img class="crestsm" src="escudo.png" alt="">
     <div class="badge">${badges}</div>
     <div class="face${j.foto ? " ph" : ""}">${j.foto ? `<img src="${fotoUrl(j.foto)}" crossorigin="anonymous" alt="">` : initials}</div>
-    <div class="nm">${esc(j.nombre)}</div>
+    <div class="nm">${esc(j.nombre)}</div>${c.icon ? '<div class="iconlbl">ICONO</div>' : ""}
     <div class="st"><span><b>${c.st.ASI}</b>ASI</span><span><b>${c.st.FIA}</b>FIA</span><span><b>${c.st.BIR}</b>BIR</span><span><b>${c.st.RAC}</b>RAC</span><span><b>${c.st.MVP}</b>MVP</span><span><b>${c.st.POR}</b>POR</span></div>
   </button>`;
 }
@@ -1045,8 +1051,8 @@ function renderCartas() {
 }
 function openCard(id) {
   const c = playerCard(id, $("#cardSeason").value || CUR_SEASON);
-  const adj = [c.mvpW ? `+${2 * c.mvpW} por ${c.mvpW} MVP` : "", c.mvpntW ? `−${2 * c.mvpntW} por ${c.mvpntW} MVPn't` : ""].filter(Boolean).join(" · ");
-  $("#cardBig").innerHTML = cardHTML(c) + `<p class="faint" style="text-align:center;margin:8px 0 0">${c.va}/${c.conv} partidos · ${c.seasonUsed === "all" ? "todas las temporadas" : "temporada " + c.seasonUsed}<br>Base ${c.base}${adj ? " · " + adj : ""}</p>`;
+  const adj = c.icon ? [] : [c.mvpW ? `+${2 * c.mvpW} por ${c.mvpW} MVP` : "", c.mvpntW ? `−${2 * c.mvpntW} por ${c.mvpntW} MVPn't` : ""].filter(Boolean).join(" · ");
+  $("#cardBig").innerHTML = cardHTML(c) + `<p class="faint" style="text-align:center;margin:8px 0 0">${c.va}/${c.conv} partidos · ${c.seasonUsed === "all" ? "todas las temporadas" : "temporada " + c.seasonUsed}<br>${c.icon ? "Icono · stats de toda su trayectoria" : `Base ${c.base}${adj ? " · " + adj : ""}`}</p>`;
   $("#avBox").hidden = !(id === S.me || isAdmin()); $("#avFile").dataset.j = id; $("#avLbl").textContent = S.jug.get(id).foto ? "Cambiar foto de perfil" : "Subir foto de perfil";
   if (!$("#cardDlg").open) $("#cardDlg").showModal();
 }
