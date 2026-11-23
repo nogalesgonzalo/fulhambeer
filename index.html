@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Fulhambeer F7</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍺</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Matchday programme: scoreboard header, the next match first, dense tables below. Chalk paper, touchline ink, beer amber. */
+:root {
+  --paper: #f5f4ef; --card: #ffffff; --ink: #15171b; --ink-2: #555850; --ink-3: #8a8c84; --line: #e2e0d8;
+  --accent: #c27a06; --accent-soft: #fbf0da; --good: #1e7a3c; --good-soft: #e3f2e7; --bad: #b3372f; --bad-soft: #f8e4e1;
+  --warn: #9a6a00; --bar: #2a78d6;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
+  --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #121416; --card: #1b1e21; --ink: #f0efe9; --ink-2: #b9bab2; --ink-3: #85877f; --line: #2c3034;
+    --accent: #f0a42a; --accent-soft: #3a2c12; --good: #5cc27b; --good-soft: #17301f; --bad: #ef7a6f; --bad-soft: #3a1c19;
+    --warn: #e0b44a; --bar: #3987e5; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font: 15px/1.45 var(--body); -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px 56px; }
+.num { font-variant-numeric: tabular-nums; }
+section.view > *, .card > * { min-width: 0; }
+select { max-width: 100%; min-width: 0; }
+
+header.top { background: #15171b; color: #f5f4ef; }
+header.top .wrap { padding-top: 16px; padding-bottom: 0; display: grid; gap: 12px; }
+.brand { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand h1 { font: 800 clamp(30px, 6vw, 44px)/0.95 var(--display); letter-spacing: 0.02em; margin: 0; text-transform: uppercase; }
+.brand h1 span { color: #f0a42a; }
+.brand .comp { font: 600 13px/1.3 var(--display); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; }
+.me { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.me select { background: transparent; color: inherit; border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 5px 10px; }
+.me select option { color: #15171b; }
+.scoreline { display: flex; gap: 8px; flex-wrap: wrap; }
+.sl { border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 6px 10px; min-width: 70px; }
+.sl b { display: block; font: 700 21px/1 var(--display); }
+.sl small { font: 600 11px/1.2 var(--display); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; }
+nav.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+nav.tabs a { font: 700 15px/1 var(--display); letter-spacing: 0.06em; text-transform: uppercase; color: inherit; text-decoration: none; padding: 12px 12px 11px; border-bottom: 3px solid transparent; opacity: 0.7; white-space: nowrap; }
+nav.tabs a[aria-current="page"] { opacity: 1; border-color: #f0a42a; }
+
+section.view { display: none; padding-top: 18px; }
+section.view.on { display: grid; gap: 16px; }
+h2 { font: 700 22px/1.1 var(--display); letter-spacing: 0.03em; text-transform: uppercase; margin: 0; text-wrap: balance; }
+h3 { font: 700 16px/1.2 var(--display); letter-spacing: 0.05em; text-transform: uppercase; margin: 0; color: var(--ink-2); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.spread { justify-content: space-between; }
+.muted { color: var(--ink-2); }
+.faint { color: var(--ink-3); font-size: 13px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font: 600 12px/1 var(--display); letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.btn { border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 8px 12px; cursor: pointer; font-weight: 600; display: inline-flex; gap: 6px; align-items: center; }
+.btn:hover { border-color: var(--ink-3); }
+a.btn { text-decoration: none; color: inherit; }
+.btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn.sm { padding: 4px 9px; font-size: 13px; font-weight: 500; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+select, input[type="text"], input[type="number"], input[type="date"], input[type="time"], input[type="password"], textarea { border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 7px 10px; }
+textarea { width: 100%; min-height: 200px; font: 13px/1.4 ui-monospace, Menlo, monospace; }
+
+.fixture { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
+.team { overflow-wrap: anywhere; font: 800 clamp(20px, 4.5vw, 30px)/1 var(--display); text-transform: uppercase; letter-spacing: 0.02em; }
+.team.us { color: var(--accent); }
+.team.right { text-align: right; }
+.score { font: 800 clamp(28px, 7vw, 44px)/1 var(--display); text-align: center; min-width: 96px; }
+.score small { display: block; font: 600 12px/1.3 var(--display); letter-spacing: 0.08em; color: var(--ink-3); text-transform: uppercase; }
+.meta { display: flex; gap: 6px 16px; flex-wrap: wrap; font-size: 14px; color: var(--ink-2); }
+.meta b { color: var(--ink); font-weight: 600; }
+
+.quorum { display: grid; gap: 8px; }
+.qbar { position: relative; height: 14px; border-radius: 7px; background: var(--line); overflow: hidden; }
+.qbar .f { position: absolute; inset: 0 auto 0 0; background: var(--good); border-radius: 0 7px 7px 0; }
+.qbar .t { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+.qnums { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 14px; }
+.qnums b { font: 800 22px/1 var(--display); }
+.prob { font: 700 14px/1 var(--display); letter-spacing: 0.04em; padding: 6px 10px; border-radius: 6px; }
+.prob.hi { background: var(--good-soft); color: var(--good); } .prob.mid { background: var(--accent-soft); color: var(--warn); } .prob.lo { background: var(--bad-soft); color: var(--bad); }
+
+.squad { display: grid; gap: 6px; }
+.p { display: grid; grid-template-columns: 36px 1fr auto; gap: 4px 10px; align-items: center; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); }
+.p.mine { box-shadow: 0 0 0 2px var(--accent) inset; }
+.p .d { font: 700 18px/1 var(--display); color: var(--ink-3); text-align: center; }
+.p .n { font-weight: 600; }
+.p .n small { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+.p .why { grid-column: 2 / 4; font-size: 13px; color: var(--ink-2); }
+.p .why b { font-weight: 600; }
+.p .edit { grid-column: 1 / 4; display: flex; gap: 8px; flex-wrap: wrap; }
+.p .edit input { flex: 1; min-width: 180px; }
+.p.st-si { border-left: 4px solid var(--good); }
+.p.st-no { border-left: 4px solid var(--bad); }
+.p.st-duda { border-left: 4px solid var(--warn); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 7px 10px; cursor: pointer; font-size: 14px; min-width: 40px; filter: grayscale(1); opacity: 0.4; }
+.seg button[aria-pressed="true"] { filter: none; opacity: 1; }
+.seg button[aria-pressed="true"].si { background: var(--good-soft); }
+.seg button[aria-pressed="true"].no { background: var(--bad-soft); }
+.seg button[aria-pressed="true"].duda { background: var(--accent-soft); }
+.seg button:not(:disabled):hover { opacity: 0.8; }
+.seg button:disabled { cursor: not-allowed; }
+.addp { display: flex; gap: 8px; flex-wrap: wrap; }
+.addp select { flex: 1; }
+.alert { border-left: 3px solid var(--warn); padding: 8px 12px; background: var(--accent-soft); border-radius: 6px; font-size: 14px; }
+
+.tbl-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 7px 8px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font: 600 12px/1.2 var(--display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+td.r, th.r { text-align: right; }
+td.wt { white-space: normal; }
+tr.us td { background: var(--accent-soft); font-weight: 600; }
+tr.click { cursor: pointer; }
+tr.click:hover td { background: rgba(127,127,127,0.08); }
+.res { display: inline-block; min-width: 22px; text-align: center; border-radius: 4px; padding: 1px 6px; font: 700 13px/1.4 var(--display); }
+.res.w { background: var(--good-soft); color: var(--good); } .res.d { background: rgba(127,127,127,0.15); } .res.l { background: var(--bad-soft); color: var(--bad); }
+.form { display: inline-flex; gap: 3px; }
+.barcell { display: flex; align-items: center; gap: 8px; min-width: 140px; }
+.barcell .track { flex: 1; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.barcell .fill { height: 100%; background: var(--bar); border-radius: 0 4px 4px 0; }
+.barcell .fill.beer { background: var(--accent); }
+.barcell span { min-width: 38px; text-align: right; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.tile b { font: 800 30px/1 var(--display); display: block; }
+.tile small { font: 600 12px/1.2 var(--display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.tile p { margin: 4px 0 0; font-size: 13px; color: var(--ink-3); }
+.awards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.award { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; }
+.award small { font: 600 12px/1.2 var(--display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.award b { font: 800 24px/1.1 var(--display); }
+.award span { font-size: 13px; color: var(--ink-3); }
+.chart { position: relative; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart .tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--paper); font-size: 12px; padding: 6px 8px; border-radius: 6px; white-space: nowrap; transform: translate(-50%, -110%); display: none; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.jgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; }
+.jor { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.jor h4 { margin: 0 0 6px; font: 700 14px/1.2 var(--display); letter-spacing: 0.06em; text-transform: uppercase; display: flex; justify-content: space-between; color: var(--ink-2); }
+.jor .m { display: grid; grid-template-columns: 1fr 52px 1fr; gap: 6px; font-size: 13px; padding: 3px 0; align-items: center; }
+.jor .m .s { text-align: center; font: 700 14px/1 var(--display); }
+.jor .m .b { text-align: right; }
+.jor .m.us { font-weight: 700; color: var(--accent); }
+.jor .m .t { color: var(--ink-3); font-size: 12px; }
+dialog { border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); max-width: 560px; width: calc(100% - 32px); padding: 18px; }
+dialog::backdrop { background: rgba(0,0,0,0.45); }
+dialog .row { margin-top: 12px; }
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 14px; border-radius: 8px; font-size: 14px; display: none; z-index: 10; max-width: calc(100% - 32px); }
+footer { padding: 24px 16px; text-align: center; }
+footer button { background: none; border: 0; color: var(--ink-3); font-size: 13px; cursor: pointer; text-decoration: underline; }
+.pl-row { display: grid; grid-template-columns: 60px 1fr auto auto auto; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.pl-row input[type="number"] { width: 60px; }
+.pl-row label { font-size: 13px; color: var(--ink-2); display: inline-flex; gap: 4px; align-items: center; }
+@media (max-width: 560px) {
+  .fixture { grid-template-columns: 1fr; text-align: center; }
+  .team.right { text-align: center; }
+  .p { grid-template-columns: 30px 1fr; }
+  .p .seg { grid-column: 1 / 3; justify-self: start; }
+  .p .why { grid-column: 1 / 3; }
+  .pl-row { grid-template-columns: 56px 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <div>
+        <div class="comp" id="compName">Liga Municipal F7 Pozuelo · 3ª División Grupo A</div>
+        <h1>Fulham<span>beer</span></h1>
+      </div>
+      <label class="me">Soy <select id="meSel" aria-label="Quién eres"></select></label>
+    </div>
+    <div class="scoreline" id="scoreline"></div>
+    <nav class="tabs" aria-label="Secciones">
+      <a href="#partido" data-v="partido">Partido</a>
+      <a href="#liga" data-v="liga">Liga</a>
+      <a href="#stats" data-v="stats">Stats</a>
+      <a href="#multas" data-v="multas">Multas</a>
+      <a href="#historico" data-v="historico">Histórico</a>
+      <a href="#plantilla" data-v="plantilla" id="tabPlantilla" hidden>Plantilla</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="view" id="v-partido">
+    <div class="row" id="adminPager" hidden>
+      <span class="chip">Admin</span>
+      <select id="matchSel" aria-label="Elegir partido" style="flex:1"></select>
+      <button class="btn sm" id="newM">+ Partido</button>
+    </div>
+    <div class="card" style="display:grid;gap:14px" id="matchCard"></div>
+    <div class="card quorum" id="quorum"></div>
+    <div id="porraBlock"></div>
+    <div class="card" style="display:grid;gap:12px">
+      <div class="row spread">
+        <h2>Convocatoria</h2>
+        <div class="row">
+          <button class="btn sm" id="copyBtn" title="Copia el estado para mandarlo al grupo">Copiar resumen</button>
+          <button class="btn sm" id="pasteBtn" hidden>Pegar de WhatsApp</button>
+        </div>
+      </div>
+      <div class="squad" id="squad"></div>
+      <div class="addp" id="addOpt">
+        <select id="optSel" aria-label="Añadir jugador opcional"></select>
+        <button class="btn" id="optAdd">Añadir</button>
+      </div>
+      <p class="faint" style="margin:0">Marca tu respuesta. Si no vas, escribe el motivo. Puedes cambiarla hasta el día del partido.</p>
+    </div>
+    <div id="beerBlock"></div>
+    <div id="mvpBlock"></div>
+  </section>
+
+  <section class="view" id="v-liga">
+    <div class="row spread"><h2>Clasificación</h2><span class="faint" id="ligaUpd"></span></div>
+    <div class="card tbl-wrap"><table id="tabla"></table></div>
+    <div class="row spread"><h2>Calendario y resultados</h2><label class="row faint"><input type="checkbox" id="onlyUs" checked> Solo nuestros partidos</label></div>
+    <div class="jgrid" id="jornadas"></div>
+    <p class="faint">Fuente: deportes.pozuelodealarcon.org · se actualiza cada domingo.</p>
+  </section>
+
+  <section class="view" id="v-stats">
+    <div class="row spread">
+      <h2>Estadísticas</h2>
+      <div class="row">
+        <select id="seasonSel" aria-label="Temporada"></select>
+        <label class="row faint"><input type="checkbox" id="onlyComp" checked> Solo liga y copa</label>
+      </div>
+    </div>
+    <div class="tiles" id="tiles"></div>
+    <div class="awards" id="awards"></div>
+    <div class="card" style="display:grid;gap:10px">
+      <div class="row spread"><h3>Disponibles por partido</h3>
+        <div class="legend"><span><i style="background:var(--bar)"></i>9 o más</span><span><i style="background:var(--accent)"></i>Menos de 9</span></div></div>
+      <div class="chart" id="availChart"><div class="tip"></div></div>
+    </div>
+    <div class="card tbl-wrap"><table id="playerStats"></table></div>
+    <p class="faint" id="statsNote"></p>
+  </section>
+
+  <section class="view" id="v-multas">
+    <div class="row spread"><h2>Multas</h2><span class="chip" id="bote"></span></div>
+    <div class="card" style="display:grid;gap:10px">
+      <div class="row spread"><h3>⚖️ Multas en votación</h3><span class="faint">Se aprueba con 6 votos a favor · se rechaza con 6 en contra</span></div>
+      <div id="propList" class="squad"></div>
+      <form class="row" id="propForm" style="border-top:1px solid var(--line);padding-top:12px">
+        <select id="pJug" aria-label="A quién multar" required></select>
+        <input type="text" id="pConc" placeholder="Motivo (p. ej. llegar tarde, fallar a puerta vacía)" minlength="3" maxlength="160" required style="flex:2;min-width:180px">
+        <input type="number" id="pImp" min="0" max="50" step="0.5" value="1" style="width:80px" aria-label="Importe en euros">
+        <button class="btn primary" type="submit">Proponer</button>
+      </form>
+      <p class="faint" id="propHint" style="margin:0"></p>
+    </div>
+    <div class="card tbl-wrap"><table id="multaTot"></table></div>
+    <div class="card" id="multaForm" hidden style="display:grid;gap:10px">
+      <h3>Poner multa</h3>
+      <div class="row">
+        <select id="mJug" aria-label="Jugador"></select>
+        <select id="mPart" aria-label="Partido"></select>
+        <input type="text" id="mConc" placeholder="Concepto (p. ej. baja de última hora)" style="flex:1">
+        <input type="number" id="mImp" min="0" step="0.5" placeholder="€" style="width:90px" aria-label="Importe">
+        <button class="btn primary" id="mAdd">Añadir</button>
+      </div>
+    </div>
+    <div class="card tbl-wrap"><table id="multaList"></table></div>
+    <div class="card" style="display:grid;gap:8px">
+      <h3>Bajas de última hora (menos de 48 h)</h3>
+      <div class="tbl-wrap"><table id="lastMinute"></table></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-historico">
+    <div class="row spread"><h2>Histórico</h2><select id="histSeason" aria-label="Temporada"></select></div>
+    <div class="card tbl-wrap"><table id="histTbl"></table></div>
+    <p class="faint">Convocatorias 2021–2026 reconstruidas del chat de WhatsApp.</p>
+  </section>
+
+  <section class="view" id="v-plantilla">
+    <div class="row spread"><h2>Plantilla</h2><label class="row faint"><input type="checkbox" id="showInactive"> Mostrar inactivos</label></div>
+    <div class="card" id="plantilla"></div>
+  </section>
+</main>
+<footer><button id="adminBtn">Modo admin</button></footer>
+
+<dialog id="pinDlg">
+  <h2>Modo admin</h2>
+  <p class="faint">Para editar partidos anteriores, resultados, multas y plantilla.</p>
+  <input type="password" id="pinIn" placeholder="PIN" inputmode="numeric" autocomplete="off">
+  <div class="row spread"><button class="btn" id="pinCancel" type="button">Cancelar</button><button class="btn primary" id="pinOk" type="button">Entrar</button></div>
+</dialog>
+<dialog id="pasteDlg">
+  <h2>Pegar convocatoria</h2>
+  <p class="faint">Pega el mensaje del grupo. Se aplicará al partido seleccionado.</p>
+  <textarea id="pasteTxt"></textarea>
+  <div id="pastePrev" class="faint"></div>
+  <div class="row spread"><button class="btn" id="pasteCancel" type="button">Cancelar</button><button class="btn primary" id="pasteApply" type="button" disabled>Aplicar</button></div>
+</dialog>
+<dialog id="newDlg">
+  <h2>Nuevo partido</h2>
+  <div class="row"><input type="date" id="nmDate"><input type="time" id="nmTime" value="17:00"></div>
+  <div class="row"><input type="text" id="nmRival" placeholder="Rival"><input type="text" id="nmPlace" placeholder="Campo"></div>
+  <div class="row"><select id="nmComp"><option>Amistoso</option><option>Copa</option><option>Liga</option></select></div>
+  <div class="row spread"><button class="btn" id="nmCancel" type="button">Cancelar</button><button class="btn primary" id="nmCreate" type="button">Crear</button></div>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+(() => {
+"use strict";
+const SUPABASE_URL = "https://vnpgzhegcrzwbeyfzacu.supabase.co";
+const SUPABASE_KEY = "sb_publishable_vNKVqF29wIAc9gQPa-ofGg_mb9dFwKC";
+const TARGET = 9;
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+const TEAM = "FULHAMBEER";
+const DOW = ["DOMINGO", "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO"];
+const today = (() => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); })();
+const addDays = (iso, n) => { const d = new Date(iso + "T12:00:00"); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+const fmtDate = iso => { const [y, m, d] = iso.split("-"); return `${d}/${m}/${y}`; };
+const dow = iso => DOW[new Date(iso + "T12:00:00").getDay()];
+const titleCase = s => String(s || "").toLowerCase().replace(/(^|\s)(\S)/g, (a, b, c) => b + c.toUpperCase());
+const CAMPOS = { "VC ATLETISMO -F7A": "Valle de las Cañas (Atletismo F7-A)", "CARLOS RUIZ F7": "Polideportivo Carlos Ruiz F7", "PRADILLO F7-1": "Pradillo F7-1" };
+const campo = c => CAMPOS[c] || titleCase(c);
+const quedada = h => { if (!h) return null; const [H, M] = h.split(":").map(Number); const t = H * 60 + M - 30; return `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`; };
+const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(toast._t); toast._t = setTimeout(() => t.style.display = "none", 2800); }
+
+const S = { jug: new Map(), part: new Map(), resp: new Map(), log: [], multas: [], props: [], pvotos: [], mvp: [], porras: [], liga: null, me: store.get("fb_me"), pin: store.get("fb_pin"), sel: null, editing: null };
+const isAdmin = () => !!S.pin;
+const rkey = (p, j) => p + "|" + j;
+const respOf = (p, j) => S.resp.get(rkey(p, j));
+const respsOf = pid => [...S.resp.values()].filter(r => r.partido_id === pid);
+const parts = () => [...S.part.values()].sort((a, b) => a.fecha.localeCompare(b.fecha));
+const fijos = () => [...S.jug.values()].filter(j => j.fijo && j.activo).sort((a, b) => (a.orden ?? 99) - (b.orden ?? 99));
+const jName = id => S.jug.get(id)?.nombre || id;
+const goes = st => st === "si";
+const competitive = p => p.competicion === "Liga" || p.competicion === "Copa";
+const CUR_SEASON = (() => { const [y, m] = today.split("-").map(Number); const s0 = m >= 8 ? y : y - 1; return `${s0}-${String(s0 + 1).slice(2)}`; })();
+const result = p => p.gf == null || p.gc == null ? null : { gf: p.gf, gc: p.gc, r: p.gf > p.gc ? "w" : p.gf < p.gc ? "l" : "d" };
+
+/* ---------- data ---------- */
+async function fetchAll(table, order) {
+  const out = []; let from = 0;
+  for (;;) {
+    let q = sb.from(table).select("*").range(from, from + 999);
+    if (order) q = q.order(order);
+    const { data, error } = await q; if (error) throw error;
+    out.push(...data); if (data.length < 1000) break; from += 1000;
+  }
+  return out;
+}
+async function loadAll() {
+  const [j, p, r, l, m, lg, pr, pv, mv, po] = await Promise.all([
+    fetchAll("jugadores"), fetchAll("partidos", "fecha"), fetchAll("respuestas"), fetchAll("respuestas_log", "at"), fetchAll("multas", "created_at"),
+    sb.from("liga").select("*").eq("id", "actual").maybeSingle(), fetchAll("multa_propuestas", "created_at"), fetchAll("multa_votos"), fetchAll("votos_mvp"), fetchAll("porras")]);
+  S.props = pr; S.pvotos = pv; S.mvp = mv; S.porras = po;
+  S.jug = new Map(j.map(x => [x.id, x])); S.part = new Map(p.map(x => [x.id, x]));
+  S.resp = new Map(r.map(x => [rkey(x.partido_id, x.jugador_id), x])); S.log = l; S.multas = m; S.liga = lg.data?.data || null;
+}
+async function admin(action, payload) {
+  const { data, error } = await sb.functions.invoke("admin", { body: { pin: S.pin, action, payload } });
+  if (error) { let msg = "Error"; try { msg = (await error.context.json()).error; } catch {} throw new Error(msg); }
+  return data;
+}
+async function saveResp(row) {
+  const body = { partido_id: row.partido_id, jugador_id: row.jugador_id, estado: row.estado || "pendiente", motivo: row.motivo || null, cerveza: row.cerveza ?? null, motivo_cerveza: row.motivo_cerveza || null };
+  try {
+    if (isAdmin()) await admin("respuesta_upsert", body);
+    else { const { error } = await sb.from("respuestas").upsert(body); if (error) throw error; }
+    S.resp.set(rkey(body.partido_id, body.jugador_id), { ...respOf(body.partido_id, body.jugador_id), ...body, updated_at: new Date().toISOString() });
+    return true;
+  } catch (e) {
+    toast(/row-level|policy/i.test(e.message || "") ? "Este partido ya está cerrado para cambios." : "No se pudo guardar: " + (e.message || "error de red"));
+    return false;
+  }
+}
+
+/* ---------- match selection ---------- */
+const nextMatch = () => parts().find(p => p.fecha >= today && p.competicion !== "Sin identificar") || null;
+const beerMatch = () => parts().filter(p => p.fecha < today && p.fecha >= addDays(today, -3)).pop() || (parts().find(p => p.fecha === today) || null);
+const openForPlayers = p => p && p.fecha >= addDays(today, -3) && p.fecha <= addDays(today, 21);
+
+/* ---------- header ---------- */
+function renderHeader() {
+  const sel = $("#meSel");
+  const opts = [...S.jug.values()].filter(j => j.en_ficha || j.fijo).sort((a, b) => (b.fijo - a.fijo) || (a.orden ?? 99) - (b.orden ?? 99) || a.nombre.localeCompare(b.nombre));
+  sel.innerHTML = `<option value="">¿Quién eres?</option>` + opts.map(j => `<option value="${j.id}">${esc(j.nombre)}</option>`).join("");
+  sel.value = S.me || "";
+  const L = S.liga; const el = $("#scoreline");
+  if (!L) { el.innerHTML = ""; return; }
+  const row = (L.tabla || []).find(t => t.equipo === TEAM);
+  const ours = (L.calendario || []).filter(m => m.local === TEAM || m.visitante === TEAM).sort((a, b) => a.fecha.localeCompare(b.fecha));
+  const form = ours.filter(m => m.gl != null).slice(-5).map(m => { const us = m.local === TEAM; const gf = us ? m.gl : m.gv, gc = us ? m.gv : m.gl; return gf > gc ? "w" : gf < gc ? "l" : "d"; });
+  el.innerHTML = row ? `
+    <div class="sl"><b class="num">${row.pos}º</b><small>Posición</small></div>
+    <div class="sl"><b class="num">${row.pts}</b><small>Puntos</small></div>
+    <div class="sl"><b class="num">${row.g}-${row.e}-${row.p}</b><small>G-E-P</small></div>
+    <div class="sl"><b class="num">${row.gf}:${row.gc}</b><small>Goles</small></div>
+    <div class="sl"><b class="form">${form.map(r => `<span class="res ${r}">${{ w: "G", d: "E", l: "P" }[r]}</span>`).join("")}</b><small>Racha</small></div>` : "";
+}
+
+/* ---------- PARTIDO ---------- */
+function matchCardHTML(p) {
+  const res = result(p); const home = p.condicion !== "Visitante";
+  const us = `<div class="team us${home ? "" : " right"}">Fulhambeer</div>`;
+  const them = `<div class="team${home ? " right" : ""}">${esc(p.rival || "Rival por confirmar")}</div>`;
+  const mid = res ? `<div class="score num">${home ? res.gf : res.gc} – ${home ? res.gc : res.gf}<small>${{ w: "Victoria", d: "Empate", l: "Derrota" }[res.r]}</small></div>`
+    : `<div class="score">${p.hora || "--:--"}<small>${p.fecha < today ? "Sin resultado" : dow(p.fecha)}</small></div>`;
+  return `<div class="row spread"><span class="chip">${p.competicion === "Liga" && p.jornada ? "Jornada " + p.jornada : esc(p.competicion)} · ${esc(p.temporada)}</span>${p.fecha === today ? '<span class="chip">Hoy</span>' : ""}</div>
+    <div class="fixture">${home ? us + mid + them : them + mid + us}</div>
+    <div class="meta"><span><b>${dow(p.fecha)} ${fmtDate(p.fecha)}</b></span>${p.hora ? `<span>Hora <b>${p.hora}</b> · quedada ${quedada(p.hora)}</span>` : ""}${p.lugar ? `<span>📍 <b>${esc(p.lugar)}</b></span>` : ""}${p.condicion ? `<span>${esc(p.condicion)}</span>` : ""}</div>
+    ${p.fecha >= today ? `<div class="row"><span class="weather faint" data-wx="${p.id}">${wxCache[p.id] || ""}</span><span style="flex:1"></span><button class="btn sm" data-ics="${p.id}">📅 Añadir al calendario</button><a class="btn sm" target="_blank" rel="noopener" href="${gcalUrl(p)}">Google Calendar</a><button class="btn sm" data-ics="season">Toda la temporada</button></div>` : ""}`;
+}
+function rosterFor(p) {
+  const ids = new Set(fijos().map(j => j.id));
+  respsOf(p.id).forEach(r => ids.add(r.jugador_id));
+  const rank = id => { const j = S.jug.get(id); return j?.fijo ? (j.orden ?? 50) : 100 + (j?.nombre ? 0 : 1); };
+  return [...ids].sort((a, b) => rank(a) - rank(b) || jName(a).localeCompare(jName(b)));
+}
+function attendanceRate(jid, beforeIso) {
+  // solo temporada actual y partidos de competición: el histórico de WhatsApp no tiene marcas fiables
+  const ps = parts().filter(p => p.fecha < beforeIso && p.temporada === CUR_SEASON && competitive(p)).slice(-10);
+  let n = 0, g = 0;
+  ps.forEach(p => { const r = respOf(p.id, jid); if (r) { n++; if (goes(r.estado)) g++; } });
+  return n >= 2 ? (g + 0.7) / (n + 1) : 0.7;
+}
+function quorumProb(p, roster) {
+  const probs = roster.map(id => { const r = respOf(p.id, id); const st = r?.estado || "pendiente";
+    return st === "si" ? 0.97 : st === "no" ? 0 : st === "duda" ? attendanceRate(id, p.fecha) * 0.5 : attendanceRate(id, p.fecha); });
+  let dist = [1];
+  probs.forEach(q => { const nd = new Array(dist.length + 1).fill(0); dist.forEach((v, k) => { nd[k] += v * (1 - q); nd[k + 1] += v * q; }); dist = nd; });
+  return dist.slice(TARGET).reduce((a, b) => a + b, 0);
+}
+function renderPartido() {
+  const adm = isAdmin();
+  $("#adminPager").hidden = !adm; $("#pasteBtn").hidden = !adm;
+  if (adm) {
+    $("#matchSel").innerHTML = parts().slice().reverse().map(p => `<option value="${p.id}">${fmtDate(p.fecha)} · ${p.jornada ? "J" + p.jornada + " · " : ""}${esc(p.rival || "Sin identificar")}</option>`).join("");
+  }
+  if (!S.sel || !S.part.has(S.sel)) S.sel = nextMatch()?.id || parts().slice(-1)[0]?.id;
+  if (adm) $("#matchSel").value = S.sel;
+  const p = S.part.get(S.sel);
+  // beer block: last match within 3 days (only when viewing the upcoming match)
+  const bm = beerMatch();
+  $("#beerBlock").innerHTML = bm && bm.id !== S.sel ? beerBlockHTML(bm) : "";
+  bindBeer($("#beerBlock"), bm);
+  renderMvp(bm && bm.id !== S.sel ? bm : (p && p.fecha <= today && p.fecha >= addDays(today, -4) ? p : null));
+  renderPorra(p); loadWeather(p);
+  if (!p) { $("#matchCard").innerHTML = `<p class="muted">No hay partidos programados.</p>`; $("#quorum").innerHTML = ""; $("#squad").innerHTML = ""; return; }
+  $("#matchCard").innerHTML = matchCardHTML(p) + (adm ? adminMatchEdit(p) : "");
+  if (adm) bindAdminMatch(p);
+  const roster = rosterFor(p);
+  const n = { si: 0, no: 0, duda: 0, pendiente: 0 };
+  roster.forEach(id => n[respOf(p.id, id)?.estado || "pendiente"]++);
+  const future = p.fecha >= today;
+  if (future) {
+    const prob = quorumProb(p, roster); const cls = prob >= 0.75 ? "hi" : prob >= 0.4 ? "mid" : "lo";
+    $("#quorum").hidden = false;
+    $("#quorum").innerHTML = `<div class="qnums"><span><b class="num">${n.si}</b> / ${TARGET} confirmados</span><span class="muted">❌ ${n.no} · ⁉️ ${n.duda} · sin responder ${n.pendiente}</span><span class="prob ${cls}">${Math.round(prob * 100)}% de llegar a ${TARGET}</span></div>
+      <div class="qbar" role="img" aria-label="${n.si} de ${TARGET} confirmados"><div class="f" style="width:${Math.min(100, n.si / Math.max(TARGET, roster.length) * 100)}%"></div><div class="t" style="left:${TARGET / Math.max(TARGET, roster.length) * 100}%"></div></div>
+      ${n.si < TARGET ? `<p class="faint" style="margin:0">Faltan ${TARGET - n.si} para llegar a ${TARGET}. La probabilidad usa lo que ha venido cada uno esta temporada.</p>` : ""}`;
+  } else $("#quorum").hidden = true;
+  const canEdit = adm || openForPlayers(p);
+  const showBeer = true;
+  $("#squad").innerHTML = roster.map(id => rowHTML(p, id, canEdit, showBeer)).join("");
+  bindRows($("#squad"), p);
+  const optIds = [...S.jug.values()].filter(j => !j.fijo && (j.en_ficha || adm) && !roster.includes(j.id)).sort((a, b) => (b.en_ficha - a.en_ficha) || a.nombre.localeCompare(b.nombre));
+  $("#optSel").innerHTML = `<option value="">Añadir opcional de la ficha…</option>` + optIds.map(j => `<option value="${j.id}">${esc(j.nombre)}${j.en_ficha ? "" : " (histórico)"}</option>`).join("");
+  $("#addOpt").hidden = !canEdit || !optIds.length;
+}
+function rowHTML(p, id, canEdit, showBeer) {
+  const j = S.jug.get(id); const r = respOf(p.id, id) || {}; const st = r.estado || "pendiente";
+  const editing = S.editing && S.editing.p === p.id && S.editing.j === id;
+  const btn = (v, lbl, title) => `<button class="${v}" aria-pressed="${st === v}" data-v="${v}" title="${title}" ${canEdit ? "" : "disabled"}>${lbl}</button>`;
+  const why = [];
+  if (st === "no" && r.motivo) why.push(`<b>Motivo:</b> ${esc(r.motivo)}`);
+  if (showBeer && (r.cerveza != null || p.fecha <= today) && st !== "no") why.push(r.cerveza === true ? `🍺 Se quedó${r.motivo_cerveza ? ": " + esc(r.motivo_cerveza) : ""}` : r.cerveza === false ? `🚫🍺 <b>Sin cerveza:</b> ${esc(r.motivo_cerveza || "")}` : '<span class="faint">🍺 sin marcar</span>');
+  return `<div class="p st-${st}${id === S.me ? " mine" : ""}" data-j="${id}">
+    <div class="d num">${j?.dorsal ?? ""}</div>
+    <div class="n">${esc(jName(id))}${j?.fijo ? "" : j?.invitado ? "<small>invitado</small>" : j?.en_ficha ? "<small>opcional</small>" : ""}${id === S.me ? "<small>tú</small>" : ""}</div>
+    <div class="seg" role="group" aria-label="Respuesta de ${esc(jName(id))}">${btn("si", "✅", "Voy")}${btn("no", "❌", "No voy")}${btn("duda", "⁉️", "Duda")}</div>
+    ${why.length ? `<div class="why">${why.join(" · ")}</div>` : ""}
+    ${showBeer && canEdit ? `<div class="edit" data-beer><span class="faint">${p.fecha > today ? "¿Te quedas a las cervezas?" : "¿Te quedaste a las cervezas?"}</span><div class="seg"><button class="si" data-b="1" aria-pressed="${r.cerveza === true}">🍺 Sí</button><button class="no" data-b="0" aria-pressed="${r.cerveza === false}">No</button></div></div>` : ""}
+    ${editing ? editorHTML(S.editing.kind, r) : ""}
+  </div>`;
+}
+function editorHTML(kind, r, extraStyle = "") {
+  const ph = { no: "¿Por qué no vienes? (obligatorio)", beer: "¿Por qué no te quedas? O propón plan alternativo (obligatorio)", beeryes: "Comentario (opcional): ¿dónde vamos?, ¿quién paga?…" }[kind];
+  const val = kind === "no" ? r.motivo || "" : r.motivo_cerveza || "";
+  return `<form class="edit" data-form="${kind}" style="${extraStyle}"><input type="text" ${kind === "beeryes" ? "" : 'required minlength="3"'} maxlength="140" placeholder="${ph}" value="${esc(val)}" aria-label="Comentario"><button class="btn primary" type="submit">Guardar</button><button class="btn" type="button" data-cancel>${kind === "beeryes" ? "Sin comentario" : "Cancelar"}</button></form>`;
+}
+function bindRows(root, p) {
+  root.querySelectorAll(".p[data-j]").forEach(row => {
+    const id = row.dataset.j;
+    row.querySelectorAll(".seg button[data-v]").forEach(b => b.onclick = async () => {
+      const v = b.dataset.v; const cur = respOf(p.id, id) || { partido_id: p.id, jugador_id: id };
+      if (v === "no") { S.editing = { p: p.id, j: id, kind: "no" }; renderPartido(); row.isConnected; const inp = document.querySelector(`.p[data-j="${id}"] form input`); inp && inp.focus(); return; }
+      if (await saveResp({ ...cur, estado: v, motivo: null })) { if (!S.me) promptMe(id); renderAll(); }
+    });
+    row.querySelectorAll("[data-b]").forEach(b => b.onclick = async () => {
+      const cur = respOf(p.id, id) || { partido_id: p.id, jugador_id: id, estado: "pendiente" };
+      if (b.dataset.b === "0") { S.editing = { p: p.id, j: id, kind: "beer" }; renderAll(); return; }
+      const keep = cur.cerveza === true ? cur.motivo_cerveza : null;
+      if (await saveResp({ ...cur, estado: cur.estado || "pendiente", cerveza: true, motivo_cerveza: keep })) { S.editing = { p: p.id, j: id, kind: "beeryes" }; if (!S.me) promptMe(id); renderAll(); }
+    });
+    const f = row.querySelector("form[data-form]");
+    if (f) {
+      f.onsubmit = async e => {
+        e.preventDefault(); const kind = f.dataset.form; const txt = f.querySelector("input").value.trim(); if (kind !== "beeryes" && txt.length < 3) return;
+        const cur = respOf(p.id, id) || { partido_id: p.id, jugador_id: id };
+        const ok = kind === "no" ? await saveResp({ ...cur, estado: "no", motivo: txt })
+          : kind === "beer" ? await saveResp({ ...cur, estado: cur.estado || "pendiente", cerveza: false, motivo_cerveza: txt })
+          : await saveResp({ ...cur, estado: cur.estado || "pendiente", cerveza: true, motivo_cerveza: txt || null });
+        if (ok) { S.editing = null; if (!S.me) promptMe(id); renderAll(); }
+      };
+      f.querySelector("[data-cancel]").onclick = () => { S.editing = null; renderAll(); };
+    }
+  });
+}
+function beerBlockHTML(p) {
+  const goers = rosterFor(p).filter(id => respOf(p.id, id)?.estado === "si" || respOf(p.id, id)?.cerveza != null);
+  const done = goers.filter(id => respOf(p.id, id)?.cerveza != null).length;
+  const rows = goers.map(id => {
+    const r = respOf(p.id, id) || {}; const editing = S.editing && S.editing.p === p.id && S.editing.j === id;
+    return `<div class="p${id === S.me ? " mine" : ""}" data-j="${id}" style="grid-template-columns:1fr auto">
+      <div class="n">${esc(jName(id))}${r.motivo_cerveza ? `<small>${r.cerveza ? "🍺" : "🚫"} ${esc(r.motivo_cerveza)}</small>` : ""}</div>
+      <div class="seg"><button class="si" data-b="1" aria-pressed="${r.cerveza === true}">🍺 Sí</button><button class="no" data-b="0" aria-pressed="${r.cerveza === false}">No</button></div>
+      ${editing ? editorHTML(S.editing.kind, r, "grid-column:1/3") : ""}
+    </div>`; }).join("");
+  return `<div class="card" style="display:grid;gap:10px"><div class="row spread"><h2>🍺 Tercer tiempo · ${fmtDate(p.fecha)}</h2><span class="chip">${done}/${goers.length} respondidos</span></div>
+    <p class="faint" style="margin:0">Partido contra ${esc(p.rival || "—")}. ¿Te quedaste a las cervezas? Si no, justifícalo o propón plan.</p>
+    <div class="squad">${rows}</div></div>`;
+}
+function bindBeer(root, p) { if (p && root.firstElementChild) bindRows(root, p); }
+/* MVP / MVPn't */
+function mvpTally(pid, tipo) {
+  const c = {}; S.mvp.filter(v => v.partido_id === pid && v.tipo === tipo).forEach(v => c[v.elegido_id] = (c[v.elegido_id] || 0) + 1);
+  return Object.entries(c).sort((a, b) => b[1] - a[1]);
+}
+function mvpWinner(pid, tipo) { const t = mvpTally(pid, tipo); return t.length && (t.length === 1 || t[0][1] > t[1][1]) ? t[0][0] : null; }
+function renderMvp(p) {
+  const box = $("#mvpBlock");
+  if (!p) { box.innerHTML = ""; return; }
+  const played = rosterFor(p).filter(id => respOf(p.id, id)?.estado === "si");
+  const canVote = S.me && played.includes(S.me) && p.fecha >= addDays(today, -4);
+  const mine = t => S.mvp.find(v => v.partido_id === p.id && v.votante_id === S.me && v.tipo === t);
+  const col = (tipo, title, emoji) => {
+    const t = mvpTally(p.id, tipo); const total = t.reduce((a, x) => a + x[1], 0); const my = mine(tipo);
+    const comments = S.mvp.filter(v => v.partido_id === p.id && v.tipo === tipo && v.comentario).map(v => `<li>${emoji} <b>${esc(jName(v.elegido_id))}</b>: “${esc(v.comentario)}”</li>`).join("");
+    return `<div style="display:grid;gap:8px"><h3>${title}</h3>
+      ${t.length ? t.map(([id, n]) => `<div class="barcell"><span style="min-width:90px;text-align:left">${esc(jName(id))}</span><div class="track"><div class="fill ${tipo === "mvp" ? "" : "beer"}" style="width:${Math.round(n / total * 100)}%"></div></div><span class="num">${n}</span></div>`).join("") : '<span class="faint">Sin votos todavía</span>'}
+      ${comments ? `<ul class="faint" style="margin:0;padding-left:18px">${comments}</ul>` : ""}
+      ${canVote ? `<form class="addp" data-mvp="${tipo}"><select required aria-label="${title}"><option value="">${my ? "Cambiar voto…" : "Vota…"}</option>${played.filter(id => id !== S.me).map(id => `<option value="${id}" ${my?.elegido_id === id ? "selected" : ""}>${esc(jName(id))}</option>`).join("")}</select><input type="text" maxlength="140" placeholder="Motivo (opcional)" value="${esc(my?.comentario || "")}" style="flex:2;min-width:140px"><button class="btn" type="submit">${my ? "Cambiar" : "Votar"}</button></form>` : ""}
+    </div>`;
+  };
+  box.innerHTML = `<div class="card" style="display:grid;gap:14px"><div class="row spread"><h2>🏆 MVP y 💩 MVPn't · ${fmtDate(p.fecha)}</h2><span class="chip">Hasta el ${fmtDate(addDays(p.fecha, 4)).slice(0, 5)}</span></div>
+    ${!S.me ? '<p class="faint" style="margin:0">Elige quién eres arriba para votar.</p>' : !played.includes(S.me) ? '<p class="faint" style="margin:0">Solo votan los que jugaron (✅). Los votos son anónimos.</p>' : '<p class="faint" style="margin:0">Votos anónimos. No puedes votarte a ti mismo.</p>'}
+    <div class="jgrid">${col("mvp", "🏆 MVP", "🏆")}${col("mvpnt", "💩 MVPn't", "💩")}</div></div>`;
+  box.querySelectorAll("form[data-mvp]").forEach(f => f.onsubmit = async e => {
+    e.preventDefault(); const el = f.querySelector("select").value; if (!el) return;
+    const body = { partido_id: p.id, votante_id: S.me, tipo: f.dataset.mvp, elegido_id: el, comentario: f.querySelector("input").value.trim() || null };
+    const { error } = await sb.from("votos_mvp").upsert(body);
+    if (error) return toast("No se pudo votar: " + error.message);
+    const i = S.mvp.findIndex(v => v.partido_id === p.id && v.votante_id === S.me && v.tipo === body.tipo); i >= 0 ? S.mvp[i] = body : S.mvp.push(body);
+    toast("Voto registrado."); renderMvp(p);
+  });
+}
+function promptMe(id) { S.me = id; store.set("fb_me", id); $("#meSel").value = id; toast(`Te recordamos como ${jName(id)}. Puedes cambiarlo arriba.`); }
+
+/* calendario */
+const WMO = c => c === 0 ? "☀️ Despejado" : c <= 2 ? "🌤️ Poco nuboso" : c === 3 ? "☁️ Nublado" : c <= 48 ? "🌫️ Niebla" : c <= 57 ? "🌦️ Llovizna" : c <= 67 ? "🌧️ Lluvia" : c <= 77 ? "🌨️ Nieve" : c <= 82 ? "🌧️ Chubascos" : c <= 86 ? "🌨️ Chubascos de nieve" : "⛈️ Tormenta";
+const wxCache = {};
+async function loadWeather(p) {
+  if (!p || !p.hora || wxCache[p.id] !== undefined) return;
+  const days = (new Date(p.fecha) - new Date(today)) / 864e5; if (days > 15 || days < 0) { wxCache[p.id] = days > 15 ? "🌡️ Previsión disponible 15 días antes" : ""; return; }
+  wxCache[p.id] = "";
+  try {
+    const u = `https://api.open-meteo.com/v1/forecast?latitude=40.435&longitude=-3.814&hourly=temperature_2m,precipitation_probability,weather_code,wind_speed_10m&timezone=Europe%2FMadrid&start_date=${p.fecha}&end_date=${p.fecha}`;
+    const d = await (await fetch(u)).json(); const i = d.hourly.time.findIndex(t => t.endsWith(p.hora.slice(0, 2) + ":00"));
+    if (i < 0) return;
+    wxCache[p.id] = `${WMO(d.hourly.weather_code[i])} · ${Math.round(d.hourly.temperature_2m[i])} °C · lluvia ${d.hourly.precipitation_probability[i] ?? 0}% · viento ${Math.round(d.hourly.wind_speed_10m[i])} km/h`;
+    document.querySelectorAll(`[data-wx="${p.id}"]`).forEach(el => el.textContent = wxCache[p.id]);
+  } catch { wxCache[p.id] = ""; }
+}
+const icsDate = (iso, hhmm, addMin = 0) => { const [H, M] = hhmm.split(":").map(Number); const t = H * 60 + M + addMin; return iso.replace(/-/g, "") + "T" + String(Math.floor(t / 60)).padStart(2, "0") + String(t % 60).padStart(2, "0") + "00"; };
+const evTitle = p => `⚽ Fulhambeer vs ${p.rival || "rival"}${p.jornada ? " (J" + p.jornada + ")" : ""}`;
+function gcalUrl(p) {
+  if (!p.hora) return "#";
+  const q = new URLSearchParams({ action: "TEMPLATE", text: evTitle(p), dates: `${icsDate(p.fecha, p.hora, -30)}/${icsDate(p.fecha, p.hora, 90)}`, ctz: "Europe/Madrid", location: p.lugar || "", details: `Quedada ${quedada(p.hora)} · partido ${p.hora}. Convocatoria: ${location.href.split("#")[0]}` });
+  return "https://calendar.google.com/calendar/render?" + q.toString();
+}
+function downloadIcs(list, name) {
+  const ev = list.filter(p => p.hora).map(p => ["BEGIN:VEVENT", `UID:${p.id}@fulhambeer`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
+    `DTSTART;TZID=Europe/Madrid:${icsDate(p.fecha, p.hora, -30)}`, `DTEND;TZID=Europe/Madrid:${icsDate(p.fecha, p.hora, 90)}`,
+    `SUMMARY:${evTitle(p)}`, `LOCATION:${(p.lugar || "").replace(/,/g, "\\,")}`, `DESCRIPTION:Quedada ${quedada(p.hora)} · partido ${p.hora}`, "END:VEVENT"].join("\r\n"));
+  const txt = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Fulhambeer//ES", "CALSCALE:GREGORIAN", ...ev, "END:VCALENDAR"].join("\r\n");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([txt], { type: "text/calendar" })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-ics]"); if (!b) return;
+  if (b.dataset.ics === "season") downloadIcs(parts().filter(p => p.fecha >= today), "fulhambeer-temporada.ics");
+  else { const p = S.part.get(b.dataset.ics); p && downloadIcs([p], `fulhambeer-${p.id}.ics`); } });
+
+/* porra */
+const kickoff = p => new Date(`${p.fecha}T${p.hora || "23:59"}:00`);
+const porraPts = (x, p) => { const r = result(p); if (!r) return null; if (x.gf === r.gf && x.gc === r.gc) return 3; return Math.sign(x.gf - x.gc) === Math.sign(r.gf - r.gc) ? 1 : 0; };
+function porraRanking(season) {
+  const pts = {}; S.porras.forEach(x => { const p = S.part.get(x.partido_id); if (!p || (season !== "all" && p.temporada !== season)) return; const v = porraPts(x, p); if (v == null) return; (pts[x.jugador_id] = pts[x.jugador_id] || { pts: 0, exact: 0, n: 0 }); pts[x.jugador_id].pts += v; pts[x.jugador_id].n++; if (v === 3) pts[x.jugador_id].exact++; });
+  return Object.entries(pts).sort((a, b) => b[1].pts - a[1].pts || b[1].exact - a[1].exact);
+}
+function renderPorra(p) {
+  const box = $("#porraBlock"); if (!p) { box.innerHTML = ""; return; }
+  const open = kickoff(p) > new Date(); const list = S.porras.filter(x => x.partido_id === p.id).sort((a, b) => jName(a.jugador_id).localeCompare(jName(b.jugador_id)));
+  if (!open && !list.length) { box.innerHTML = ""; return; }
+  const mine = list.find(x => x.jugador_id === S.me); const res = result(p);
+  const rk = porraRanking(CUR_SEASON).slice(0, 5);
+  box.innerHTML = `<div class="card" style="display:grid;gap:10px"><div class="row spread"><h2>🔮 Porra</h2><span class="chip">${open ? "Cierra a las " + (p.hora || "23:59") + " del " + fmtDate(p.fecha).slice(0, 5) : res ? `Resultado ${res.gf}-${res.gc}` : "Cerrada"}</span></div>
+    ${open ? (S.me ? `<form class="row" id="porraForm"><span>Fulhambeer</span><input type="number" min="0" max="30" id="pGf" value="${mine?.gf ?? ""}" style="width:64px" required aria-label="Goles Fulhambeer"> – <input type="number" min="0" max="30" id="pGc" value="${mine?.gc ?? ""}" style="width:64px" required aria-label="Goles rival"><span>${esc(p.rival || "Rival")}</span><button class="btn primary" type="submit">${mine ? "Cambiar" : "Apostar"}</button></form>` : '<p class="faint" style="margin:0">Elige quién eres arriba para apostar.</p>') : ""}
+    <div class="preview" style="display:flex;flex-wrap:wrap;gap:6px">${list.map(x => { const v = porraPts(x, p); return `<span class="chip" style="background:${v === 3 ? "var(--good-soft)" : "var(--accent-soft)"};color:${v === 3 ? "var(--good)" : "var(--ink)"}">${esc(jName(x.jugador_id))} ${x.gf}-${x.gc}${v != null ? ` · +${v}` : ""}</span>`; }).join("") || '<span class="faint">Nadie ha apostado todavía.</span>'}</div>
+    <p class="faint" style="margin:0">Resultado exacto +3 · ganador o empate acertado +1.${rk.length ? " Pitonisos de la temporada: " + rk.map(([id, v], i) => `${i + 1}. ${esc(jName(id))} (${v.pts})`).join(" · ") : ""}</p></div>`;
+  const f = $("#porraForm"); if (f) f.onsubmit = async e => {
+    e.preventDefault(); const body = { partido_id: p.id, jugador_id: S.me, gf: +$("#pGf").value, gc: +$("#pGc").value };
+    const { error } = await sb.from("porras").upsert(body); if (error) return toast("No se pudo guardar la apuesta: " + error.message);
+    const i = S.porras.findIndex(x => x.partido_id === p.id && x.jugador_id === S.me); i >= 0 ? S.porras[i] = body : S.porras.push(body); toast("Apuesta guardada."); renderPorra(p);
+  };
+}
+
+/* admin match editing */
+function adminMatchEdit(p) {
+  return `<div class="row" style="border-top:1px solid var(--line);padding-top:12px">
+    <span class="faint">Resultado</span><input type="number" min="0" id="aGf" value="${p.gf ?? ""}" style="width:64px" aria-label="Goles a favor"> – <input type="number" min="0" id="aGc" value="${p.gc ?? ""}" style="width:64px" aria-label="Goles en contra">
+    <input type="text" id="aRival" value="${esc(p.rival || "")}" placeholder="Rival" style="flex:1;min-width:140px">
+    <button class="btn sm" id="aSave">Guardar partido</button></div>`;
+}
+function bindAdminMatch(p) {
+  $("#aSave").onclick = async () => {
+    const gf = $("#aGf").value, gc = $("#aGc").value;
+    try { await admin("partido_upsert", { ...p, rival: $("#aRival").value.trim() || null, gf: gf === "" ? null : +gf, gc: gc === "" ? null : +gc }); await reload(); toast("Partido guardado."); } catch (e) { toast(e.message); }
+  };
+}
+
+/* WhatsApp */
+function waText(p) {
+  const mark = { si: " ✅", no: " ❌", duda: " ⁉️", pendiente: "" };
+  const lines = [];
+  if (p.rival) lines.push(`*VS ${p.rival.toUpperCase()}*${p.jornada ? ` · JORNADA ${p.jornada}` : ""}`);
+  lines.push(`Día: ${dow(p.fecha)} ${fmtDate(p.fecha)}${p.lugar ? " · " + p.lugar.toUpperCase() : ""}`);
+  if (p.hora) { lines.push(`Hora: ${p.hora}`); lines.push(`${quedada(p.hora)} en el campo`); }
+  if (p.condicion) lines.push(p.condicion.toUpperCase());
+  lines.push("");
+  const roster = rosterFor(p);
+  roster.forEach(id => { const j = S.jug.get(id); const r = respOf(p.id, id); lines.push(`${j?.dorsal != null ? j.dorsal + " " : ""}${jName(id)}${mark[r?.estado || "pendiente"]}`); });
+  const pend = roster.filter(id => (respOf(p.id, id)?.estado || "pendiente") === "pendiente").map(jName);
+  const si = roster.filter(id => respOf(p.id, id)?.estado === "si").length;
+  lines.push("", `${si}/${TARGET} confirmados${pend.length ? ` · faltan por responder: ${pend.join(", ")}` : ""}`, location.href.split("#")[0]);
+  return lines.join("\n");
+}
+function parseWA(txt) {
+  const KEYS = ["convocatoria", "partido", "lugar", "hora", "dia ", "día", "jornada", "horario", "quedada", "sabado", "sábado", "domingo", "visitante", "local", "campo", "valle", "cruces", "aluche", "vs ", "dni", "confirmados"];
+  const out = []; const seen = new Set();
+  for (let l of txt.split(/\r?\n/)) {
+    l = l.replace(/[ -‏ ⁠ ﻿]/g, " ").replace(/<Se editó este mensaje\.>/g, "").replace(/^\[[^\]]+\][^:]*:\s*/, "").replace(/\s+/g, " ").replace(/^[\s*_~]+|[\s*_~]+$/g, "");
+    if (!l || l.length > 45) continue;
+    const low = norm(l); if (KEYS.some(k => low.includes(k)) || l.includes(":")) continue;
+    const m = l.match(/^(\d{1,3})?\s*[-.)]?\s*([A-Za-zÁÉÍÓÚÑáéíóúñüÜ][A-Za-zÁÉÍÓÚÑáéíóúñüÜ'.]*)(.*)$/); if (!m) continue;
+    if (m[3].replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ]/g, "").length > 14) continue;
+    const k = norm(m[2].replace(/[.']+$/, ""));
+    const j = [...S.jug.values()].find(x => norm(x.nombre) === k || (x.alias || []).some(a => norm(a) === k));
+    if (!j || seen.has(j.id)) continue; seen.add(j.id);
+    const st = /✅|✔/.test(m[3]) ? "si" : /❌|✖|❎/.test(m[3]) ? "no" : /⁉️|❓|🤔/.test(m[3]) ? "duda" : "pendiente";
+    out.push({ id: j.id, st });
+  }
+  return out;
+}
+
+/* ---------- LIGA ---------- */
+function renderLiga() {
+  const L = S.liga;
+  if (!L) { $("#tabla").innerHTML = `<tr><td class="muted">Sin datos de liga todavía.</td></tr>`; $("#jornadas").innerHTML = ""; return; }
+  if (L.competicion) $("#compName").textContent = L.competicion;
+  $("#ligaUpd").textContent = L.actualizado ? `Actualizado ${new Date(L.actualizado).toLocaleString("es-ES", { dateStyle: "medium", timeStyle: "short" })}` : "";
+  $("#tabla").innerHTML = `<thead><tr><th class="r">#</th><th>Equipo</th><th class="r">Pts</th><th class="r">PJ</th><th class="r">G</th><th class="r">E</th><th class="r">P</th><th class="r">GF</th><th class="r">GC</th><th class="r">DG</th><th class="r">Tend.</th></tr></thead><tbody>` +
+    L.tabla.map(t => `<tr class="${t.equipo === TEAM ? "us" : ""}"><td class="r num">${t.pos}</td><td>${esc(titleCase(t.equipo))}</td><td class="r num"><b>${t.pts}</b></td><td class="r num">${t.pj}</td><td class="r num">${t.g}</td><td class="r num">${t.e}</td><td class="r num">${t.p}</td><td class="r num">${t.gf}</td><td class="r num">${t.gc}</td><td class="r num">${t.gf - t.gc > 0 ? "+" : ""}${t.gf - t.gc}</td><td class="r num faint">${esc(t.prog)}</td></tr>`).join("") + "</tbody>";
+  const only = $("#onlyUs").checked; const byJ = {};
+  (L.calendario || []).forEach(m => (byJ[m.jornada] = byJ[m.jornada] || []).push(m));
+  $("#jornadas").innerHTML = Object.keys(byJ).map(Number).sort((a, b) => a - b).map(j => {
+    let ms = byJ[j].slice().sort((a, b) => a.hora.localeCompare(b.hora));
+    if (only) ms = ms.filter(m => m.local === TEAM || m.visitante === TEAM);
+    return `<div class="jor"><h4><span>Jornada ${j}</span><span>${fmtDate(byJ[j][0].fecha)}</span></h4>${ms.map(m => {
+      const us = m.local === TEAM || m.visitante === TEAM;
+      return `<div class="m${us ? " us" : ""}"><span class="b">${esc(titleCase(m.local))}</span><span class="s num">${m.gl != null ? `${m.gl}-${m.gv}` : `<span class="t">${m.hora}</span>`}</span><span>${esc(titleCase(m.visitante))}</span></div>${us ? `<div class="faint" style="text-align:center">${m.hora} · ${esc(campo(m.campo))}${m.obs ? " · " + esc(m.obs) : ""}</div>` : ""}`;
+    }).join("")}</div>`;
+  }).join("");
+}
+
+/* ---------- STATS ---------- */
+const seasons = () => [...new Set(parts().map(p => p.temporada))].sort().reverse();
+function fillSeason(sel) { const cur = sel.value; const ss = seasons(); sel.innerHTML = `<option value="all">Todas las temporadas</option>` + ss.map(s => `<option value="${s}">Temporada ${s}</option>`).join(""); sel.value = cur && [...sel.options].some(o => o.value === cur) ? cur : (ss.includes(CUR_SEASON) ? CUR_SEASON : ss[0] || "all"); }
+function lastMinuteDrops() {
+  // a change to "no" logged within 48h before the match kickoff day
+  return S.log.filter(l => l.estado === "no").map(l => ({ ...l, p: S.part.get(l.partido_id) })).filter(l => l.p && new Date(l.p.fecha + "T" + (l.p.hora || "12:00") + ":00") - new Date(l.at) <= 48 * 3600e3 && new Date(l.at) <= new Date(l.p.fecha + "T23:59:00"))
+    .filter(l => S.log.some(o => o.partido_id === l.partido_id && o.jugador_id === l.jugador_id && o.at < l.at && o.estado !== "no"));
+}
+function renderStats() {
+  const season = $("#seasonSel").value; const onlyComp = $("#onlyComp").checked;
+  const ps = parts().filter(p => (season === "all" || p.temporada === season) && p.fecha < today && respsOf(p.id).length && (!onlyComp || competitive(p)));
+  const rows = new Map(); let beerYes = 0, beerBase = 0; const avail = [];
+  ps.forEach(p => {
+    let n = 0;
+    respsOf(p.id).forEach(r => {
+      const x = rows.get(r.jugador_id) || { id: r.jugador_id, conv: 0, va: 0, no: 0, beer: 0, beerBase: 0, streak: 0, best: 0 };
+      x.conv++; const g = goes(r.estado);
+      if (g) { x.va++; n++; x.streak++; x.best = Math.max(x.best, x.streak); } else x.streak = 0;
+      if (r.estado === "no") x.no++;
+      if (r.cerveza != null) { x.beerBase++; beerBase++; if (r.cerveza) { x.beer++; beerYes++; } }
+      rows.set(r.jugador_id, x);
+    });
+    avail.push({ p, n });
+  });
+  const res = ps.map(result).filter(Boolean);
+  const w = res.filter(r => r.r === "w").length, d = res.filter(r => r.r === "d").length, l = res.filter(r => r.r === "l").length;
+  const avg = avail.length ? avail.reduce((s, a) => s + a.n, 0) / avail.length : 0;
+  const short = avail.filter(a => a.n < TARGET).length;
+  $("#tiles").innerHTML = `
+    <div class="tile"><b class="num">${ps.length}</b><small>Partidos</small><p>${season === "all" ? "Desde oct. 2021" : "Temporada " + season}</p></div>
+    <div class="tile"><b class="num">${avg.toFixed(1)}</b><small>Disponibles de media</small><p>${short} partido${short === 1 ? "" : "s"} por debajo de ${TARGET}</p></div>
+    <div class="tile"><b class="num">${res.length ? `${w}-${d}-${l}` : "–"}</b><small>G-E-P</small><p>${res.length} con resultado</p></div>
+    <div class="tile"><b class="num">${beerBase ? Math.round(100 * beerYes / beerBase) + "%" : "–"}</b><small>🍺 Se quedan</small><p>${beerBase ? beerBase + " respuestas" : "Sin datos todavía"}</p></div>`;
+  const list = [...rows.values()].filter(r => r.conv >= Math.max(2, Math.round(ps.length * 0.15)) || S.jug.get(r.id)?.fijo);
+  const top = (arr, f, min = () => true) => arr.filter(min).sort((a, b) => f(b) - f(a))[0];
+  const ironman = top(list, r => r.va / r.conv + r.conv / 1e4, r => r.conv >= 3);
+  const cervecero = top(list, r => r.beer / r.beerBase + r.beerBase / 1e4, r => r.beerBase >= 2);
+  const bajas = top(list, r => r.no / r.conv + r.conv / 1e4, r => r.conv >= 3);
+  const racha = top(list, r => r.best);
+  const lm = lastMinuteDrops().filter(x => season === "all" || x.p.temporada === season);
+  const lmCount = {}; lm.forEach(x => lmCount[x.jugador_id] = (lmCount[x.jugador_id] || 0) + 1);
+  const lmTop = Object.entries(lmCount).sort((a, b) => b[1] - a[1])[0];
+  const aw = (t, who, txt) => `<div class="award"><small>${t}</small><b>${who ? esc(jName(who)) : "–"}</b><span>${who ? txt : "Sin datos suficientes"}</span></div>`;
+  $("#awards").innerHTML = aw("🛡️ Fijo de hierro", ironman?.id, ironman ? `${Math.round(100 * ironman.va / ironman.conv)}% de asistencia` : "") +
+    aw("🍺 Cervecero", cervecero?.id, cervecero ? `${Math.round(100 * cervecero.beer / cervecero.beerBase)}% de terceros tiempos` : "") +
+    aw("🔥 Mejor racha", racha?.id, racha ? `${racha.best} partidos seguidos` : "") +
+    aw("🙈 Rey de las bajas", bajas?.id, bajas ? `${bajas.no} bajas (${Math.round(100 * bajas.no / bajas.conv)}%)` : "") +
+    aw("⏰ Baja de última hora", lmTop?.[0], lmTop ? `${lmTop[1]} vez/veces con menos de 48 h` : "") +
+    (() => { const cnt = t => { const c = {}; ps.forEach(p => { const w = mvpWinner(p.id, t); if (w) c[w] = (c[w] || 0) + 1; }); return Object.entries(c).sort((a, b) => b[1] - a[1])[0]; };
+      const m = cnt("mvp"), n = cnt("mvpnt");
+      const pz = porraRanking(season)[0];
+      return aw("👑 Más MVPs", m?.[0], m ? `${m[1]} partido(s)` : "") + aw("💩 Más MVPn'ts", n?.[0], n ? `${n[1]} partido(s)` : "") + aw("🔮 Pitonisa", pz?.[0], pz ? `${pz[1].pts} pts en la porra (${pz[1].exact} exactos)` : ""); })();
+  drawAvail(avail);
+  const bar = (v, cls = "") => `<div class="barcell"><div class="track"><div class="fill ${cls}" style="width:${Math.round(v * 100)}%"></div></div><span class="num">${Math.round(v * 100)}%</span></div>`;
+  $("#playerStats").innerHTML = `<thead><tr><th>Jugador</th><th class="r">Conv.</th><th class="r">Va</th><th class="r">No</th><th>% asistencia</th><th class="r">Racha máx.</th><th>% cervezas</th></tr></thead><tbody>` +
+    list.sort((a, b) => b.va / b.conv - a.va / a.conv).map(r => `<tr><td><b>${esc(jName(r.id))}</b></td><td class="r num">${r.conv}</td><td class="r num">${r.va}</td><td class="r num">${r.no}</td><td>${bar(r.va / r.conv)}</td><td class="r num">${r.best}</td><td>${r.beerBase ? bar(r.beer / r.beerBase, "beer") : `<span class="faint">sin datos</span>`}</td></tr>`).join("") + "</tbody>";
+  $("#statsNote").textContent = `% asistencia = partidos con ✅ / partidos convocado (sin marca no cuenta). % cervezas = sí / respuestas de cerveza. ${onlyComp ? "Solo partidos de liga y copa." : "Incluye amistosos y partidos sin identificar."}`;
+}
+function drawAvail(avail) {
+  const box = $("#availChart"); const tip = box.querySelector(".tip"); box.querySelectorAll("svg").forEach(s => s.remove());
+  if (!avail.length) return;
+  const W = 960, H = 220, pl = 30, pr = 8, pt = 10, pb = 26;
+  const max = Math.max(14, ...avail.map(a => a.n)); const bw = (W - pl - pr) / avail.length; const y = v => pt + (H - pt - pb) * (1 - v / max);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Jugadores disponibles por partido">`;
+  [0, 7, TARGET, 14].filter(t => t <= max).forEach(t => s += `<line x1="${pl}" x2="${W - pr}" y1="${y(t)}" y2="${y(t)}" stroke="${t === TARGET ? "var(--ink-3)" : "var(--line)"}" ${t === TARGET ? 'stroke-dasharray="4 4"' : ""}/><text x="${pl - 6}" y="${y(t) + 4}" text-anchor="end" font-size="11" fill="var(--ink-3)">${t}</text>`);
+  avail.forEach((a, i) => {
+    const x = pl + i * bw + Math.min(2, bw * 0.15); const w = Math.max(2, bw - Math.min(4, bw * 0.3)); const h = H - pb - y(a.n); const r = Math.min(4, w / 2, h);
+    if (a.n > 0) s += `<path d="M${x},${H - pb} v${-(h - r)} q0,${-r} ${r},${-r} h${w - 2 * r} q${r},0 ${r},${r} v${h - r} z" fill="${a.n < TARGET ? "var(--accent)" : "var(--bar)"}"/>`;
+    s += `<rect x="${pl + i * bw}" y="${pt}" width="${bw}" height="${H - pt - pb}" fill="transparent" data-i="${i}"/>`;
+  });
+  s += `<text x="${pl}" y="${H - 8}" font-size="11" fill="var(--ink-3)">${fmtDate(avail[0].p.fecha)}</text><text x="${W - pr}" y="${H - 8}" font-size="11" text-anchor="end" fill="var(--ink-3)">${fmtDate(avail[avail.length - 1].p.fecha)}</text></svg>`;
+  box.insertAdjacentHTML("afterbegin", s);
+  box.querySelectorAll("rect[data-i]").forEach(r => {
+    r.addEventListener("mousemove", e => { const a = avail[+r.dataset.i]; const bb = box.getBoundingClientRect(); tip.style.display = "block"; tip.style.left = (e.clientX - bb.left) + "px"; tip.style.top = (e.clientY - bb.top) + "px"; tip.textContent = `${fmtDate(a.p.fecha)} · ${a.p.rival || "Sin rival"} · ${a.n} disponibles`; });
+    r.addEventListener("mouseleave", () => tip.style.display = "none");
+  });
+}
+
+/* ---------- MULTAS ---------- */
+function renderPropuestas() {
+  const adm = isAdmin();
+  const open = S.props.filter(x => x.estado === "votacion").reverse(); const closed = S.props.filter(x => x.estado !== "votacion").slice(-5).reverse();
+  const card = (x) => {
+    const vs = S.pvotos.filter(v => v.propuesta_id === x.id); const a = vs.filter(v => v.voto).length, c = vs.length - a;
+    const my = vs.find(v => v.votante_id === S.me);
+    const can = x.estado === "votacion" && S.me && S.me !== x.jugador_id;
+    return `<div class="p" style="grid-template-columns:1fr auto">
+      <div class="n">${esc(jName(x.jugador_id))} · ${(+x.importe).toFixed(2)} €<small>propuesta de ${esc(jName(x.propuesto_por))}</small></div>
+      <div class="row">${x.estado === "votacion" ? `<span class="num">👍 ${a} · 👎 ${c}</span>` : `<span class="res ${x.estado === "aprobada" ? "w" : "l"}">${x.estado === "aprobada" ? "Aprobada" : "Rechazada"} ${a}-${c}</span>`}
+        ${can ? `<div class="seg"><button class="si" data-vote="${x.id}" data-v="1" aria-pressed="${my?.voto === true}">👍</button><button class="no" data-vote="${x.id}" data-v="0" aria-pressed="${my?.voto === false}">👎</button></div>` : ""}
+        ${adm ? `<button class="btn sm" data-pdel="${x.id}">Borrar</button>` : ""}</div>
+      <div class="why">“${esc(x.concepto)}”</div></div>`;
+  };
+  $("#propList").innerHTML = (open.map(card).join("") || '<p class="faint" style="margin:0">No hay multas en votación. Alguien habrá hecho algo, ¿no?</p>') + (closed.length ? `<h3 style="margin-top:6px">Últimas resueltas</h3>` + closed.map(card).join("") : "");
+  $("#pJug").innerHTML = `<option value="">¿A quién multamos?</option>` + [...S.jug.values()].filter(j => j.activo && j.id !== S.me).sort((a, b) => a.nombre.localeCompare(b.nombre)).map(j => `<option value="${j.id}">${esc(j.nombre)}</option>`).join("");
+  $("#propForm").querySelectorAll("select,input,button").forEach(el => el.disabled = !S.me);
+  $("#propHint").textContent = S.me ? "No puedes votar tus propias multas. Puedes cambiar tu voto mientras siga abierta." : "Elige quién eres arriba para proponer y votar.";
+  $("#propList").querySelectorAll("[data-vote]").forEach(b => b.onclick = async () => {
+    const body = { propuesta_id: +b.dataset.vote, votante_id: S.me, voto: b.dataset.v === "1" };
+    const { error } = await sb.from("multa_votos").upsert(body); if (error) return toast("No se pudo votar: " + error.message);
+    await reload(); toast("Voto registrado.");
+  });
+  $("#propList").querySelectorAll("[data-pdel]").forEach(b => b.onclick = async () => { try { await admin("propuesta_delete", { id: +b.dataset.pdel }); await reload(); } catch (e) { toast(e.message); } });
+}
+function renderMultas() {
+  renderPropuestas();
+  const adm = isAdmin(); $("#multaForm").hidden = !adm;
+  const tot = {}; S.multas.forEach(m => { const t = tot[m.jugador_id] = tot[m.jugador_id] || { pend: 0, pag: 0, n: 0 }; t.n++; m.pagada ? t.pag += +m.importe : t.pend += +m.importe; });
+  const pendTotal = Object.values(tot).reduce((s, t) => s + t.pend, 0), pagTotal = Object.values(tot).reduce((s, t) => s + t.pag, 0);
+  $("#bote").textContent = `Bote: ${pagTotal.toFixed(2)} € · pendiente ${pendTotal.toFixed(2)} €`;
+  $("#multaTot").innerHTML = Object.keys(tot).length ? `<thead><tr><th>Jugador</th><th class="r">Multas</th><th class="r">Pendiente</th><th class="r">Pagado</th></tr></thead><tbody>` +
+    Object.entries(tot).sort((a, b) => b[1].pend - a[1].pend).map(([id, t]) => `<tr><td><b>${esc(jName(id))}</b></td><td class="r num">${t.n}</td><td class="r num">${t.pend.toFixed(2)} €</td><td class="r num">${t.pag.toFixed(2)} €</td></tr>`).join("") + "</tbody>"
+    : `<tr><td class="muted">Nadie tiene multas todavía. Disfrutadlo.</td></tr>`;
+  $("#multaList").innerHTML = S.multas.length ? `<thead><tr><th>Fecha</th><th>Jugador</th><th>Concepto</th><th class="r">Importe</th><th>Estado</th>${adm ? "<th></th>" : ""}</tr></thead><tbody>` +
+    S.multas.slice().reverse().map(m => `<tr><td class="num">${fmtDate(m.created_at.slice(0, 10))}</td><td>${esc(jName(m.jugador_id))}</td><td class="wt">${esc(m.concepto)}${m.partido_id ? ` <span class="faint">· ${fmtDate(S.part.get(m.partido_id)?.fecha || m.partido_id)}</span>` : ""}</td><td class="r num">${(+m.importe).toFixed(2)} €</td><td>${m.pagada ? '<span class="res w">Pagada</span>' : '<span class="res l">Pendiente</span>'}</td>${adm ? `<td><button class="btn sm" data-pay="${m.id}">${m.pagada ? "Desmarcar" : "Marcar pagada"}</button> <button class="btn sm" data-del="${m.id}">Borrar</button></td>` : ""}</tr>`).join("") + "</tbody>" : "";
+  $("#multaList").querySelectorAll("[data-pay]").forEach(b => b.onclick = async () => { const m = S.multas.find(x => x.id == b.dataset.pay); try { await admin("multa_update", { ...m, pagada: !m.pagada }); await reload(); } catch (e) { toast(e.message); } });
+  $("#multaList").querySelectorAll("[data-del]").forEach(b => b.onclick = async () => { try { await admin("multa_delete", { id: +b.dataset.del }); await reload(); } catch (e) { toast(e.message); } });
+  const lm = lastMinuteDrops().reverse();
+  $("#lastMinute").innerHTML = lm.length ? `<thead><tr><th>Partido</th><th>Jugador</th><th>Avisó</th><th>Motivo</th></tr></thead><tbody>` + lm.map(x => `<tr><td>${fmtDate(x.p.fecha)} · ${esc(x.p.rival || "")}</td><td>${esc(jName(x.jugador_id))}</td><td class="num">${new Date(x.at).toLocaleString("es-ES", { weekday: "short", hour: "2-digit", minute: "2-digit" })}</td><td class="wt">${esc(respOf(x.partido_id, x.jugador_id)?.motivo || "")}</td></tr>`).join("") + "</tbody>"
+    : `<tr><td class="muted">Ninguna por ahora. Se detectan cuando alguien cambia a ❌ en las 48 h antes del partido.</td></tr>`;
+  if (adm) {
+    $("#mJug").innerHTML = [...S.jug.values()].filter(j => j.activo).map(j => `<option value="${j.id}">${esc(j.nombre)}</option>`).join("");
+    $("#mPart").innerHTML = `<option value="">Sin partido</option>` + parts().filter(p => p.fecha <= addDays(today, 14)).slice(-12).reverse().map(p => `<option value="${p.id}">${fmtDate(p.fecha)} · ${esc(p.rival || "")}</option>`).join("");
+  }
+}
+
+/* ---------- HISTÓRICO ---------- */
+function renderHist() {
+  const season = $("#histSeason").value;
+  const ps = parts().filter(p => season === "all" || p.temporada === season).reverse();
+  $("#histTbl").innerHTML = `<thead><tr><th>Fecha</th><th>J</th><th>Rival</th><th>Res.</th><th class="r">Disp.</th><th class="r">🍺</th><th>🏆</th><th>💩</th><th>Campo</th></tr></thead><tbody>` +
+    ps.map(p => { const mv = mvpWinner(p.id, "mvp"), mn = mvpWinner(p.id, "mvpnt"); const r = result(p); const rs = respsOf(p.id); const n = rs.filter(x => goes(x.estado)).length; const b = rs.filter(x => x.cerveza === true).length; const bb = rs.filter(x => x.cerveza != null).length;
+      return `<tr class="click" data-id="${p.id}"><td class="num">${fmtDate(p.fecha)}</td><td class="num">${p.jornada || ""}</td><td>${esc(p.rival || "—")}</td><td>${r ? `<span class="res ${r.r}">${r.gf}-${r.gc}</span>` : (p.fecha >= today ? '<span class="faint">próximo</span>' : "")}</td><td class="r num">${rs.length ? n : ""}</td><td class="r num">${bb ? `${b}/${bb}` : ""}</td><td>${mv ? esc(jName(mv)) : ""}</td><td>${mn ? esc(jName(mn)) : ""}</td><td class="faint">${esc(p.lugar || "")}</td></tr>`; }).join("") + "</tbody>";
+  $("#histTbl").querySelectorAll("tr.click").forEach(tr => tr.onclick = () => { S.sel = tr.dataset.id; location.hash = "#partido"; });
+}
+
+/* ---------- PLANTILLA (admin) ---------- */
+function renderPlantilla() {
+  $("#tabPlantilla").hidden = !isAdmin(); if (!isAdmin()) return;
+  const showIn = $("#showInactive").checked;
+  const js = [...S.jug.values()].filter(j => showIn || j.activo).sort((a, b) => (b.fijo - a.fijo) || (a.orden ?? 99) - (b.orden ?? 99) || a.nombre.localeCompare(b.nombre));
+  $("#plantilla").innerHTML = `<div class="pl-row faint"><span>Dorsal</span><span>Jugador</span><span>Orden</span><span></span><span></span></div>` + js.map(j => `
+    <div class="pl-row" data-id="${j.id}"><input type="number" min="0" max="99" value="${j.dorsal ?? ""}" data-f="dorsal" aria-label="Dorsal de ${esc(j.nombre)}">
+      <span><b>${esc(j.nombre)}</b> <span class="faint">${j.en_ficha ? "ficha" : ""}</span></span>
+      <input type="number" min="0" value="${j.orden ?? ""}" data-f="orden" style="width:56px" aria-label="Orden de ${esc(j.nombre)}">
+      <label><input type="checkbox" data-f="fijo" ${j.fijo ? "checked" : ""}> Fijo</label>
+      <label><input type="checkbox" data-f="activo" ${j.activo ? "checked" : ""}> Activo</label></div>`).join("");
+  $("#plantilla").querySelectorAll("input[data-f]").forEach(inp => inp.onchange = async () => {
+    const j = { ...S.jug.get(inp.closest(".pl-row").dataset.id) }; const f = inp.dataset.f;
+    j[f] = inp.type === "checkbox" ? inp.checked : (inp.value === "" ? null : +inp.value);
+    try { await admin("jugador_upsert", j); S.jug.set(j.id, j); toast("Guardado."); } catch (e) { toast(e.message); }
+  });
+}
+
+/* ---------- router ---------- */
+const VIEWS = ["partido", "liga", "stats", "multas", "historico", "plantilla"];
+function route() {
+  let v = location.hash.slice(1); if (!VIEWS.includes(v) || (v === "plantilla" && !isAdmin())) v = "partido";
+  VIEWS.forEach(x => $("#v-" + x).classList.toggle("on", x === v));
+  document.querySelectorAll("nav.tabs a").forEach(a => a.dataset.v === v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  renderAll();
+}
+function renderAll() {
+  fillSeason($("#seasonSel")); fillSeason($("#histSeason"));
+  renderHeader(); renderPartido(); renderLiga(); renderStats(); renderMultas(); renderHist(); renderPlantilla();
+  $("#adminBtn").textContent = isAdmin() ? "Salir del modo admin" : "Modo admin";
+}
+async function reload() { await loadAll(); renderAll(); }
+
+/* ---------- events ---------- */
+addEventListener("hashchange", route);
+$("#meSel").onchange = e => { S.me = e.target.value || null; store.set("fb_me", S.me); renderAll(); };
+$("#matchSel").onchange = e => { S.sel = e.target.value; S.editing = null; renderPartido(); };
+$("#optAdd").onclick = async () => { const id = $("#optSel").value; const p = S.part.get(S.sel); if (!id || !p) return; if (await saveResp({ partido_id: p.id, jugador_id: id, estado: "pendiente" })) renderAll(); };
+$("#copyBtn").onclick = async () => { const p = S.part.get(S.sel); if (!p) return; try { await navigator.clipboard.writeText(waText(p)); toast("Resumen copiado. Pégalo en el grupo."); } catch { toast("No se pudo copiar."); } };
+$("#adminBtn").onclick = () => { if (isAdmin()) { S.pin = null; store.set("fb_pin", null); renderAll(); route(); return; } $("#pinIn").value = ""; $("#pinDlg").showModal(); };
+$("#pinCancel").onclick = () => $("#pinDlg").close();
+$("#pinOk").onclick = async () => { S.pin = $("#pinIn").value.trim(); try { await admin("check", {}); store.set("fb_pin", S.pin); $("#pinDlg").close(); toast("Modo admin activado."); renderAll(); } catch (e) { S.pin = null; toast(e.message || "PIN incorrecto"); } };
+let parsed = [];
+$("#pasteBtn").onclick = () => { $("#pasteTxt").value = ""; $("#pastePrev").textContent = ""; $("#pasteApply").disabled = true; $("#pasteDlg").showModal(); };
+$("#pasteTxt").oninput = () => { parsed = parseWA($("#pasteTxt").value); $("#pastePrev").textContent = parsed.length ? parsed.map(x => `${jName(x.id)} ${{ si: "✅", no: "❌", duda: "⁉️", pendiente: "—" }[x.st]}`).join(" · ") : "No se detectan jugadores."; $("#pasteApply").disabled = !parsed.length; };
+$("#pasteCancel").onclick = () => $("#pasteDlg").close();
+$("#pasteApply").onclick = async () => { const p = S.part.get(S.sel); for (const x of parsed) { const cur = respOf(p.id, x.id) || {}; await saveResp({ ...cur, partido_id: p.id, jugador_id: x.id, estado: x.st, motivo: x.st === "no" ? cur.motivo || "(WhatsApp)" : null }); } $("#pasteDlg").close(); renderAll(); toast("Convocatoria actualizada."); };
+$("#newM").onclick = () => { $("#nmDate").value = today; $("#newDlg").showModal(); };
+$("#nmCancel").onclick = () => $("#newDlg").close();
+$("#nmCreate").onclick = async () => {
+  const f = $("#nmDate").value; if (!f) return; let id = f, i = 2; while (S.part.has(id)) id = `${f}-${i++}`;
+  const [y, m] = f.split("-").map(Number); const s = m >= 8 ? y : y - 1;
+  try { await admin("partido_upsert", { id, fecha: f, temporada: `${s}-${String(s + 1).slice(2)}`, rival: $("#nmRival").value.trim() || null, lugar: $("#nmPlace").value.trim() || null, hora: $("#nmTime").value || null, competicion: $("#nmComp").value, fuente: "Web" }); S.sel = id; $("#newDlg").close(); await reload(); } catch (e) { toast(e.message); }
+};
+$("#propForm").onsubmit = async e => {
+  e.preventDefault(); if (!S.me) return;
+  const body = { jugador_id: $("#pJug").value, propuesto_por: S.me, concepto: $("#pConc").value.trim(), importe: +$("#pImp").value || 0 };
+  if (!body.jugador_id || body.concepto.length < 3) return;
+  const { error } = await sb.from("multa_propuestas").insert(body); if (error) return toast("No se pudo proponer: " + error.message);
+  $("#pConc").value = ""; await reload(); toast("Multa propuesta. ¡A votar!");
+};
+$("#mAdd").onclick = async () => { const imp = +$("#mImp").value; const c = $("#mConc").value.trim(); if (!c) return toast("Escribe el concepto."); try { await admin("multa_insert", { jugador_id: $("#mJug").value, partido_id: $("#mPart").value || null, concepto: c, importe: imp || 0 }); $("#mConc").value = ""; $("#mImp").value = ""; await reload(); } catch (e) { toast(e.message); } };
+["#seasonSel", "#onlyComp"].forEach(s => $(s).onchange = () => { renderStats(); renderHist(); });
+$("#histSeason").onchange = renderHist; $("#onlyUs").onchange = renderLiga; $("#showInactive").onchange = renderPlantilla;
+
+/* ---------- boot ---------- */
+route();
+loadAll().then(() => {
+  renderAll();
+  sb.channel("cambios").on("postgres_changes", { event: "*", schema: "public", table: "respuestas" }, payload => {
+    const r = payload.new; if (r && r.partido_id) { S.resp.set(rkey(r.partido_id, r.jugador_id), r); if (!S.editing) renderAll(); }
+  }).on("postgres_changes", { event: "*", schema: "public", table: "multa_votos" }, () => { if (!S.editing) reload(); })
+    .on("postgres_changes", { event: "*", schema: "public", table: "votos_mvp" }, () => { if (!S.editing) reload(); })
+    .on("postgres_changes", { event: "*", schema: "public", table: "porras" }, () => { if (!S.editing) reload(); }).subscribe();
+}).catch(() => { $("#matchCard").innerHTML = `<p class="muted">No se pueden cargar los datos. Revisa la conexión y recarga.</p>`; });
+})();
+</script>
+</body>
+</html>
