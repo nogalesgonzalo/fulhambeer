@@ -479,10 +479,13 @@ function renderPartido() {
   if (adm) $("#matchSel").value = S.sel;
   const p = S.part.get(S.sel);
   // beer block: last match within 3 days (only when viewing the upcoming match)
-  const bm = beerMatch();
+  // Tercer tiempo y MVP del último partido solo en la vista por defecto (el próximo partido).
+  // Si se elige otro partido, todo lo que se ve es de ese partido.
+  const isDefault = S.sel === nextMatch()?.id;
+  const bm = isDefault ? beerMatch() : null;
   $("#beerBlock").innerHTML = bm && bm.id !== S.sel ? beerBlockHTML(bm) : "";
   bindBeer($("#beerBlock"), bm);
-  renderMvp(bm && bm.id !== S.sel ? bm : (p && p.fecha <= today && p.fecha >= addDays(today, -4) ? p : null));
+  renderMvp(bm && bm.id !== S.sel ? bm : (p && p.fecha <= today ? p : null));
   renderPorra(p); loadWeather(p);
   if (!p) { $("#matchCard").innerHTML = `<p class="muted">No hay partidos programados.</p>`; $("#quorum").innerHTML = ""; $("#squad").innerHTML = ""; return; }
   $("#matchCard").innerHTML = matchCardHTML(p) + (adm ? adminMatchEdit(p) : "");
@@ -582,8 +585,10 @@ function mvpWinner(pid, tipo) { const t = mvpTally(pid, tipo); return t.length &
 function renderMvp(p) {
   const box = $("#mvpBlock");
   if (!p) { box.innerHTML = ""; return; }
+  const votingOpen = p.fecha >= addDays(today, -4);
+  if (!votingOpen && !S.mvp.some(v => v.partido_id === p.id)) { box.innerHTML = ""; return; }
   const played = rosterFor(p).filter(id => respOf(p.id, id)?.estado === "si");
-  const canVote = S.me && played.includes(S.me) && p.fecha >= addDays(today, -4);
+  const canVote = S.me && played.includes(S.me) && votingOpen;
   const mine = t => S.mvp.find(v => v.partido_id === p.id && v.votante_id === S.me && v.tipo === t);
   const col = (tipo, title, emoji) => {
     const t = mvpTally(p.id, tipo); const total = t.reduce((a, x) => a + x[1], 0); const my = mine(tipo);
@@ -594,8 +599,8 @@ function renderMvp(p) {
       ${canVote ? `<form class="addp" data-mvp="${tipo}"><select required aria-label="${title}"><option value="">${my ? "Cambiar voto…" : "Vota…"}</option>${played.filter(id => id !== S.me).map(id => `<option value="${id}" ${my?.elegido_id === id ? "selected" : ""}>${esc(jName(id))}</option>`).join("")}</select><input type="text" maxlength="140" placeholder="Motivo (opcional)" value="${esc(my?.comentario || "")}" style="flex:2;min-width:140px"><button class="btn" type="submit">${my ? "Cambiar" : "Votar"}</button></form>` : ""}
     </div>`;
   };
-  box.innerHTML = `<div class="card" style="display:grid;gap:14px"><div class="row spread"><h2>🏆 MVP y 💩 MVPn't · ${fmtDate(p.fecha)}</h2><span class="chip">Hasta el ${fmtDate(addDays(p.fecha, 4)).slice(0, 5)}</span></div>
-    ${!S.me ? '<p class="faint" style="margin:0">Elige quién eres arriba para votar.</p>' : !played.includes(S.me) ? `<p class="alert" style="margin:0">${esc(jName(S.me))}: no aparece tu ✅ en este partido, así que no puedes votar. Solo votan los que jugaron. Si sí jugaste, márcate ✅ arriba (o pídeselo al admin).</p>` : '<p class="faint" style="margin:0">Votos anónimos. No puedes votarte a ti mismo.</p>'}
+  box.innerHTML = `<div class="card" style="display:grid;gap:14px"><div class="row spread"><h2>🏆 MVP y 💩 MVPn't · ${fmtDate(p.fecha)}</h2><span class="chip">${votingOpen ? "Hasta el " + fmtDate(addDays(p.fecha, 4)).slice(0, 5) : "Votación cerrada"}</span></div>
+    ${!votingOpen ? "" : !S.me ? '<p class="faint" style="margin:0">Elige quién eres arriba para votar.</p>' : !played.includes(S.me) ? `<p class="alert" style="margin:0">${esc(jName(S.me))}: no aparece tu ✅ en este partido, así que no puedes votar. Solo votan los que jugaron. Si sí jugaste, márcate ✅ arriba (o pídeselo al admin).</p>` : '<p class="faint" style="margin:0">Votos anónimos. No puedes votarte a ti mismo.</p>'}
     <div class="jgrid">${col("mvp", "🏆 MVP", "🏆")}${col("mvpnt", "💩 MVPn't", "💩")}</div></div>`;
   box.querySelectorAll("form[data-mvp]").forEach(f => f.onsubmit = async e => {
     e.preventDefault(); const el = f.querySelector("select").value; if (!el) return;
