@@ -433,10 +433,15 @@ function renderHeader() {
 }
 
 /* ---------- PARTIDO ---------- */
+function tablaRow(name, p) {
+  if (!S.liga || !name || (p && p.temporada !== S.liga.temporada)) return null;
+  return (S.liga.tabla || []).find(t => norm(t.equipo) === norm(name)) || null;
+}
+const posTag = t => t ? `<small style="display:block;font:600 13px/1.4 var(--display);letter-spacing:0.06em;color:var(--ink-3);font-style:normal">${t.pos}º · ${t.pts} pts · ${t.g}-${t.e}-${t.p}</small>` : "";
 function matchCardHTML(p) {
   const res = result(p); const home = p.condicion !== "Visitante";
-  const us = `<div class="team us${home ? "" : " right"}">Fulhambeer</div>`;
-  const them = `<div class="team${home ? " right" : ""}">${esc(p.rival || "Rival por confirmar")}</div>`;
+  const us = `<div class="team us${home ? "" : " right"}">Fulhambeer${posTag(tablaRow("FULHAMBEER", p))}</div>`;
+  const them = `<div class="team${home ? " right" : ""}">${esc(p.rival || "Rival por confirmar")}${posTag(tablaRow(p.rival, p))}</div>`;
   const mid = res ? `<div class="score num">${home ? res.gf : res.gc} – ${home ? res.gc : res.gf}<small>${{ w: "Victoria", d: "Empate", l: "Derrota" }[res.r]}</small></div>`
     : `<div class="score">${p.hora || "--:--"}<small>${p.fecha < today ? "Sin resultado" : dow(p.fecha)}</small></div>`;
   return `<div class="row spread"><span class="chip">${p.competicion === "Liga" && p.jornada ? "Jornada " + p.jornada : esc(p.competicion)} · ${esc(p.temporada)}</span>${p.fecha === today ? '<span class="chip">Hoy</span>' : ""}</div>
