@@ -707,7 +707,7 @@ function mvpTally(pid, tipo) {
   const c = {}; S.mvp.filter(v => v.partido_id === pid && v.tipo === tipo).forEach(v => c[v.elegido_id] = (c[v.elegido_id] || 0) + 1);
   return Object.entries(c).sort((a, b) => b[1] - a[1]);
 }
-function mvpWinner(pid, tipo) { const t = mvpTally(pid, tipo); return t.length && (t.length === 1 || t[0][1] > t[1][1]) ? t[0][0] : null; }
+function mvpWinner(pid, tipo) { const of = S.part.get(pid)?.[tipo === "mvp" ? "mvp_id" : "mvpnt_id"]; if (of) return of; const t = mvpTally(pid, tipo); return t.length && (t.length === 1 || t[0][1] > t[1][1]) ? t[0][0] : null; }
 function renderMvp(p) {
   const box = $("#mvpBlock");
   if (!p) { box.innerHTML = ""; return; }
@@ -810,16 +810,19 @@ function renderPorra(p) {
 }
 
 /* admin match editing */
+function jOpts(sel) { return [...S.jug.values()].filter(j => j.activo || j.id === sel).sort((a, b) => a.nombre.localeCompare(b.nombre)).map(j => `<option value="${j.id}" ${j.id === sel ? "selected" : ""}>${esc(j.nombre)}</option>`).join(""); }
 function adminMatchEdit(p) {
   return `<div class="row" style="border-top:1px solid var(--line);padding-top:12px">
     <span class="faint">Resultado</span><input type="number" min="0" id="aGf" value="${p.gf ?? ""}" style="width:64px" aria-label="Goles a favor"> – <input type="number" min="0" id="aGc" value="${p.gc ?? ""}" style="width:64px" aria-label="Goles en contra">
     <input type="text" id="aRival" value="${esc(p.rival || "")}" placeholder="Rival" style="flex:1;min-width:140px">
+    <label class="faint">MVP oficial <select id="aMvp"><option value="">— (votación)</option>${jOpts(p.mvp_id)}</select></label>
+    <label class="faint">MVPn't oficial <select id="aMvpnt"><option value="">— (votación)</option>${jOpts(p.mvpnt_id)}</select></label>
     <button class="btn sm" id="aSave">Guardar partido</button></div>`;
 }
 function bindAdminMatch(p) {
   $("#aSave").onclick = async () => {
     const gf = $("#aGf").value, gc = $("#aGc").value;
-    try { await admin("partido_upsert", { ...p, rival: $("#aRival").value.trim() || null, gf: gf === "" ? null : +gf, gc: gc === "" ? null : +gc }); await reload(); toast("Partido guardado."); } catch (e) { toast(e.message); }
+    try { await admin("partido_upsert", { ...p, rival: $("#aRival").value.trim() || null, gf: gf === "" ? null : +gf, gc: gc === "" ? null : +gc, mvp_id: $("#aMvp").value || null, mvpnt_id: $("#aMvpnt").value || null }); await reload(); toast("Partido guardado."); } catch (e) { toast(e.message); }
   };
 }
 
@@ -1045,6 +1048,8 @@ function playerCard(id, season, raw = false) {
   const ids = new Set(ps.map(p => p.id));
   const lm = lastMinuteDrops().filter(x => x.jugador_id === id && ids.has(x.partido_id)).length;
   const mvpVotes = S.mvp.filter(v => ids.has(v.partido_id) && v.elegido_id === id);
+  // partidos sin votos en la app pero con MVP/MVPn't oficial (apuntado por el admin): cuenta como 2 votos
+  const offVotes = tipo => ps.filter(p => p[tipo === "mvp" ? "mvp_id" : "mvpnt_id"] === id && !S.mvp.some(v => v.partido_id === p.id && v.tipo === tipo)).length * 2;
   const mvpW = ps.filter(p => mvpWinner(p.id, "mvp") === id).length, mvpntW = ps.filter(p => mvpWinner(p.id, "mvpnt") === id).length;
   const porraRow = (porraRanking(season).find(([j]) => j === id) || [null, { pts: 0, n: 0 }])[1]; const porra = porraRow.pts;
   const n = conv.length || 1;
@@ -1054,7 +1059,7 @@ function playerCard(id, season, raw = false) {
     FIA: clamp(99 - 45 * no / n - 12 * lm),
     RAC: clamp(45 + best * 9),
     // votos recibidos por partido jugado: cada voto MVP suma, cada voto MVPn't resta (60 = neutro)
-    MVP: clamp(60 + 15 * (mvpVotes.filter(v => v.tipo === "mvp").length - 0.8 * mvpVotes.filter(v => v.tipo === "mvpnt").length) / Math.max(va, 1)),
+    MVP: clamp(60 + 15 * (mvpVotes.filter(v => v.tipo === "mvp").length + offVotes("mvp") - 0.8 * (mvpVotes.filter(v => v.tipo === "mvpnt").length + offVotes("mvpnt"))) / Math.max(va, 1)),
     // media de puntos por porra jugada (máx. 5); quien no juega la porra queda neutro
     POR: porraRow.n ? clamp(50 + 10 * porra / porraRow.n) : 60,
   };

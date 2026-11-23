@@ -272,3 +272,7 @@ grant execute on function public.set_foto_perfil(text, text) to anon, authentica
 
 -- Migración 5: cartas icono (media fija)
 alter table public.jugadores add column if not exists icono smallint check (icono is null or icono between 40 and 99);
+
+-- Migración 6: MVP/MVPn't oficial por partido (lo apunta el admin)
+alter table public.partidos add column if not exists mvp_id text references public.jugadores(id) on update cascade on delete set null;
+alter table public.partidos add column if not exists mvpnt_id text references public.jugadores(id) on update cascade on delete set null;

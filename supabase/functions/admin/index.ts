@@ -21,7 +21,7 @@ async function sha256(s: string) {
 const pick = (o: Record<string, unknown>, keys: string[]) =>
   Object.fromEntries(keys.filter((k) => k in o).map((k) => [k, o[k]]));
 
-const PARTIDO_COLS = ["id", "fecha", "temporada", "rival", "lugar", "hora", "jornada", "competicion", "condicion", "gf", "gc", "fuente"];
+const PARTIDO_COLS = ["id", "fecha", "temporada", "rival", "lugar", "hora", "jornada", "competicion", "condicion", "gf", "gc", "fuente", "mvp_id", "mvpnt_id"];
 const JUGADOR_COLS = ["id", "nombre", "nombre_ficha", "dorsal", "fijo", "activo", "en_ficha", "orden", "alias", "estado_defecto", "motivo_defecto", "posicion", "foto"];
 const RESP_COLS = ["partido_id", "jugador_id", "estado", "motivo", "cerveza", "motivo_cerveza"];
 const MULTA_COLS = ["jugador_id", "partido_id", "concepto", "importe", "pagada"];
