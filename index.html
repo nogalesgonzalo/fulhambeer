@@ -539,7 +539,8 @@ function editorHTML(kind, r, extraStyle = "") {
   const ph = { no: "¿Por qué no vienes? (obligatorio)", beer: "¿Por qué no te quedas? O propón plan alternativo (obligatorio)", beeryes: "Comentario (opcional): ¿dónde vamos?, ¿quién paga?…", "no-adm": "Motivo (opcional en modo admin)", "beer-adm": "Motivo (opcional en modo admin)" }[kind];
   const val = kind.startsWith("no") ? r.motivo || "" : r.motivo_cerveza || "";
   const optional = kind === "beeryes" || kind.endsWith("-adm");
-  return `<form class="edit" data-form="${kind}" style="${extraStyle}"><input type="text" ${optional ? "" : 'required minlength="3"'} maxlength="140" placeholder="${ph}" value="${esc(val)}" aria-label="Comentario"><button class="btn primary" type="submit">Guardar</button><button class="btn" type="button" data-cancel>${kind === "beeryes" ? "Sin comentario" : "Cancelar"}</button>${kind === "no-adm" || kind === "beer-adm" ? '<button class="btn" type="submit" data-skip>Guardar sin motivo</button>' : ""}</form>`;
+  const hint = kind === "beer" ? '<span class="alert" style="flex-basis:100%;padding:6px 10px">Para guardar el <b>No</b> escribe el motivo y pulsa Guardar.</span>' : kind === "no" ? '<span class="alert" style="flex-basis:100%;padding:6px 10px">Para guardar el <b>❌</b> escribe el motivo y pulsa Guardar.</span>' : "";
+  return `<form class="edit" data-form="${kind}" style="${extraStyle}">${hint}<input type="text" ${optional ? "" : 'required minlength="3"'} maxlength="140" placeholder="${ph}" value="${esc(val)}" aria-label="Comentario"><button class="btn primary" type="submit">Guardar</button><button class="btn" type="button" data-cancel>${kind === "beeryes" ? "Sin comentario" : "Cancelar"}</button>${kind === "no-adm" || kind === "beer-adm" ? '<button class="btn" type="submit" data-skip>Guardar sin motivo</button>' : ""}</form>`;
 }
 function bindRows(root, p) {
   root.querySelectorAll(".p[data-j]").forEach(row => {
@@ -926,6 +927,7 @@ function renderAll() {
   fillSeason($("#seasonSel")); fillSeason($("#histSeason"));
   renderHeader(); renderPartido(); renderLiga(); renderStats(); renderMultas(); renderHist(); renderPlantilla();
   $("#adminBtn").textContent = isAdmin() ? "Salir del modo admin" : "Modo admin";
+  if (S.editing) { const inp = document.querySelector(`.p[data-j="${S.editing.j}"] form[data-form] input`); if (inp && document.activeElement !== inp) { inp.focus({ preventScroll: false }); inp.scrollIntoView({ block: "center", behavior: "smooth" }); } }
 }
 async function reload() { await loadAll(); renderAll(); }
 
