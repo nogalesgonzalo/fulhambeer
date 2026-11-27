@@ -306,6 +306,11 @@ footer button { background: none; border: 0; color: var(--ink-3); font-size: 13p
         <select id="optSel" aria-label="Añadir jugador opcional"></select>
         <button class="btn" id="optAdd">Añadir</button>
       </div>
+      <form class="addp" id="newJ" hidden>
+        <input id="newJName" maxlength="30" placeholder="Nombre o apodo" style="flex:1;min-width:140px" aria-label="Nombre del jugador nuevo">
+        <select id="newJType" aria-label="Tipo de jugador"><option value="opcional">Opcional (en la ficha)</option><option value="invitado">Invitado</option></select>
+        <button class="btn primary">Crear y añadir</button>
+      </form>
       <p class="faint" style="margin:0">Solo puedes marcar tu fila. Si no vas, escribe el motivo. Puedes cambiarlo hasta el día del partido. A los que no usan la app los apunta el admin.</p>
     </div>
     <div id="beerBlock"></div>
@@ -631,8 +636,8 @@ function renderPartido() {
   bindRows($("#squad"), p);
   // un opcional puede apuntarse a sí mismo; el admin puede añadir a cualquiera
   const optIds = [...S.jug.values()].filter(j => !j.fijo && (adm ? true : j.id === S.me && j.en_ficha) && !roster.includes(j.id)).sort((a, b) => (b.en_ficha - a.en_ficha) || a.nombre.localeCompare(b.nombre));
-  $("#optSel").innerHTML = `<option value="">${adm ? "Añadir opcional de la ficha…" : "Apuntarme a este partido"}</option>` + optIds.map(j => `<option value="${j.id}">${esc(j.nombre)}${j.en_ficha ? "" : " (histórico)"}</option>`).join("");
-  $("#addOpt").hidden = !canEdit || !optIds.length;
+  $("#optSel").innerHTML = `<option value="">${adm ? "Añadir opcional de la ficha…" : "Apuntarme a este partido"}</option>` + optIds.map(j => `<option value="${j.id}">${esc(j.nombre)}${j.en_ficha ? "" : j.invitado ? " (invitado)" : " (histórico)"}</option>`).join("") + (adm ? `<option value="__new">➕ Jugador nuevo…</option>` : "");
+  $("#addOpt").hidden = !canEdit || (!optIds.length && !adm); $("#newJ").hidden = true;
 }
 function rowHTML(p, id, canEdit, showBeer) {
   const j = S.jug.get(id); const r = respOf(p.id, id) || {}; const st = r.estado || "pendiente";
@@ -1281,7 +1286,19 @@ async function reload() { await loadAll(); renderAll(); }
 addEventListener("hashchange", route);
 $("#meSel").onchange = e => { S.me = e.target.value || null; store.set("fb_me", S.me); renderAll(); if (!S.me) askWho(); };
 $("#matchSel").onchange = e => { S.sel = e.target.value; S.editing = null; renderPartido(); };
-$("#optAdd").onclick = async () => { const id = $("#optSel").value; const p = S.part.get(S.sel); if (!id || !p) return; if (await saveResp({ partido_id: p.id, jugador_id: id, estado: "pendiente" })) renderAll(); };
+$("#optSel").onchange = () => { const nw = $("#optSel").value === "__new"; $("#newJ").hidden = !nw; if (nw) $("#newJName").focus(); };
+$("#newJ").onsubmit = async e => {
+  e.preventDefault(); const p = S.part.get(S.sel); const nombre = $("#newJName").value.trim(); if (!p || nombre.length < 2) return toast("Escribe el nombre.");
+  const base = nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "jugador";
+  let id = base, i = 2; while (S.jug.has(id)) id = `${base}-${i++}`;
+  const tipo = $("#newJType").value;
+  try {
+    await admin("jugador_upsert", { id, nombre, fijo: false, activo: true, en_ficha: tipo === "opcional", invitado: tipo === "invitado", alias: [] });
+    await admin("respuesta_upsert", { partido_id: p.id, jugador_id: id, estado: "si" });
+    $("#newJName").value = ""; await reload(); toast(`${nombre} añadido al partido.`);
+  } catch (err) { toast(err.message); }
+};
+$("#optAdd").onclick = async () => { const id = $("#optSel").value; if (id === "__new") return $("#newJ").requestSubmit(); const p = S.part.get(S.sel); if (!id || !p) return; if (await saveResp({ partido_id: p.id, jugador_id: id, estado: "pendiente" })) renderAll(); };
 $("#copyBtn").onclick = async () => { const p = S.part.get(S.sel); if (!p) return; try { await navigator.clipboard.writeText(waText(p)); toast("Resumen copiado. Pégalo en el grupo."); } catch { toast("No se pudo copiar."); } };
 $("#adminBtn").onclick = () => { if (isAdmin()) { S.pin = null; store.set("fb_pin", null); renderAll(); route(); return; } $("#pinIn").value = ""; $("#pinDlg").showModal(); };
 $("#pinCancel").onclick = () => $("#pinDlg").close();
